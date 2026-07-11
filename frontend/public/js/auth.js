@@ -62,7 +62,7 @@ function setUserAvatar() {
         if (user.profileImage || user.photo) {
             const img = document.createElement('img');
             // Use profileImage if available, otherwise use photo
-            const imagePath = user.profileImage || (user.photo ? user.photo : null);
+            const imagePath = user.profileImage || (user.photo ? `/uploads/${user.photo}` : null);
             if (imagePath) {
                 img.src = imagePath;
             img.alt = 'Profile';
@@ -97,15 +97,6 @@ window.addEventListener('DOMContentLoaded', () => {
     setUserAvatar();
 });
 
-
-function resolvePhotoUrl(photo) {
-    if (!photo) return null;
-    if (photo.startsWith('http://') || photo.startsWith('https://')) return photo;
-    if (photo.startsWith('/')) return photo; // already a path like /uploads/x.jpg
-    return `/uploads/${photo}`;
-}
-
-window.resolvePhotoUrl = resolvePhotoUrl;
 // Export for inline event handlers
 window.requireLogin = requireLogin;
 window.logout = logout;

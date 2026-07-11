@@ -124,15 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Function to update avatar display
   function updateAvatarDisplay(photoUrl, firstName, lastName) {
-    // profileAvatar is the small header-dropdown DIV (not an <img>) — setting
-    // .src on it does nothing. The real large photo is #profileAvatarMain.
-    const profileAvatarMain = document.getElementById('profileAvatarMain');
+    const profileAvatar = document.getElementById('profileAvatar');
     const userAvatar = document.getElementById('userAvatar');
     
     if (photoUrl) {
       // If there's a photo URL, use it
-      if (profileAvatarMain) profileAvatarMain.src = photoUrl;
-      if (userAvatar) userAvatar.src = photoUrl;
+      profileAvatar.src = photoUrl;
+      userAvatar.src = photoUrl;
       
       // Store the photo URL in localStorage
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -141,12 +139,14 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (firstName && lastName) {
       // If no photo but we have a name, use initials
       const initialsUrl = generateInitialsAvatar(firstName, lastName);
-      if (profileAvatarMain) profileAvatarMain.src = initialsUrl;
-      if (userAvatar) userAvatar.src = initialsUrl;
+      profileAvatar.src = initialsUrl;
+      userAvatar.src = initialsUrl;
     }
   }
   
   // Handle avatar upload
+  const profileAvatar = document.getElementById('profileAvatar');
+  
   if (avatarInput) {
     avatarInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
@@ -178,17 +178,15 @@ document.addEventListener('DOMContentLoaded', function() {
           });
 
           if (!response.ok) {
-            const errBody = await response.json();
-            // Backend error handler sends the message under "error", not "message"
-            throw new Error(errBody.error || errBody.message || 'Failed to upload photo');
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to upload photo');
           }
 
           const data = await response.json();
           
           if (data.success) {
-            // data.data.photo is already a full Cloudinary URL — resolvePhotoUrl handles
-            // that plus the old local-filename case for any accounts from before the migration
-            const photoUrl = resolvePhotoUrl(data.data.photo);
+            // Update avatar with new photo URL
+            const photoUrl = `/uploads/${data.data.photo}`;
             updateAvatarDisplay(photoUrl);
             showMessage('Profile picture updated successfully');
           }
@@ -329,18 +327,13 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Function to show messages
   function showMessage(message, isError = false) {
-    // profile.html has no element with class "container" — the actual page
-    // wrapper is <main class="main-content">. Fall back safely if neither exists.
-    const target = document.querySelector('.main-content') || document.querySelector('.container') || document.body;
-    if (!target) return;
-
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${isError ? 'danger' : 'success'} alert-dismissible fade show`;
     alertDiv.innerHTML = `
       ${message}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-    target.insertBefore(alertDiv, target.firstChild);
+    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
     
     // Auto dismiss after 5 seconds
     setTimeout(() => {
@@ -382,9 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update avatar
       if (data.photo) {
-        // resolvePhotoUrl (from auth.js) handles Cloudinary URLs and old local filenames alike
-        const photoUrl = resolvePhotoUrl(data.photo);
-        updateAvatarDisplay(photoUrl);
+        updateAvatarDisplay(`/uploads/${data.photo}`);
       } else {
         updateAvatarDisplay(null, data.firstName, data.lastName);
       }
@@ -397,113 +388,102 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Handle profile form submission
-  // NOTE: profile.html currently has no <form class="profile-form">, so this
-  // block is guarded to avoid crashing on page load. The address/city/state/pinCode
-  // fields are already saved via the saveProfileBtn handler above; this block is
-  // effectively unused unless a matching <form> is added to the HTML.
-  if (profileForm) {
-    profileForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  profileForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      try {
-        const token = localStorage.getItem('token');
-        const formData = new FormData(profileForm);
-        const currentData = {
-          email: document.getElementById('email').value,
-          mobile: document.getElementById('mobile').value,
-          address: document.getElementById('address').value,
-          city: document.getElementById('city').value,
-          state: document.getElementById('state').value,
-          pinCode: document.getElementById('pinCode').value
-        };
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData(profileForm);
+      const currentData = {
+        email: document.getElementById('email').value,
+        mobile: document.getElementById('mobile').value,
+        address: document.getElementById('address').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value,
+        pinCode: document.getElementById('pinCode').value
+      };
 
-        // Check if email or mobile is being updated
-        const currentUser = await fetch('/api/v1/users/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }).then(res => res.json());
+      // Check if email or mobile is being updated
+      const currentUser = await fetch('/api/v1/users/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).then(res => res.json());
 
-        if (currentUser.data.email !== currentData.email || currentUser.data.mobile !== currentData.mobile) {
-          const currentPassword = prompt('Please enter your current password to update email or mobile:');
-          if (!currentPassword) {
-            showMessage('Password is required to update email or mobile', true);
-            return;
-          }
-          currentData.currentPassword = currentPassword;
+      if (currentUser.data.email !== currentData.email || currentUser.data.mobile !== currentData.mobile) {
+        const currentPassword = prompt('Please enter your current password to update email or mobile:');
+        if (!currentPassword) {
+          showMessage('Password is required to update email or mobile', true);
+          return;
         }
-
-        const response = await fetch('/api/v1/users/updateprofile', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(currentData)
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to update profile');
-        }
-
-        showMessage('Profile updated successfully');
-        
-        // Refresh user data
-        getUserData();
-
-      } catch (error) {
-        showMessage(error.message, true);
+        currentData.currentPassword = currentPassword;
       }
-    });
-  }
+
+      const response = await fetch('/api/v1/users/updateprofile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(currentData)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update profile');
+      }
+
+      showMessage('Profile updated successfully');
+      
+      // Refresh user data
+      getUserData();
+
+    } catch (error) {
+      showMessage(error.message, true);
+    }
+  });
 
   // Handle password form submission
-  // NOTE: profile.html currently has no element with id="passwordForm" either
-  // (password changes go through the changePasswordBtn click handler above).
-  // Guarded the same way to avoid a page-load crash.
-  if (passwordForm) {
-    passwordForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  passwordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      try {
-        const token = localStorage.getItem('token');
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+    try {
+      const token = localStorage.getItem('token');
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
 
-        if (newPassword !== confirmPassword) {
-          throw new Error('New passwords do not match');
-        }
-
-        const response = await fetch('/api/v1/users/updatepassword', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            currentPassword,
-            newPassword
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message || 'Failed to update password');
-        }
-
-        // Update token in localStorage
-        localStorage.setItem('token', data.token);
-        
-        showMessage('Password updated successfully');
-        
-        // Clear password form
-        passwordForm.reset();
-
-      } catch (error) {
-        showMessage(error.message, true);
+      if (newPassword !== confirmPassword) {
+        throw new Error('New passwords do not match');
       }
-    });
-  }
+
+      const response = await fetch('/api/v1/users/updatepassword', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update password');
+      }
+
+      // Update token in localStorage
+      localStorage.setItem('token', data.token);
+      
+      showMessage('Password updated successfully');
+      
+      // Clear password form
+      passwordForm.reset();
+
+    } catch (error) {
+      showMessage(error.message, true);
+    }
+  });
 
   // Handle logout
   const logoutBtn = document.getElementById('logoutBtn');

@@ -162,7 +162,7 @@ async function initializeUserData() {
     if (ddEmail) ddEmail.textContent = data.email;
     if (ddAvatar) {
         if (data.photo) {
-            ddAvatar.src = resolvePhotoUrl(data.photo);
+            ddAvatar.src = `/uploads/${data.photo}`;
         } else {
             ddAvatar.src = `https://ui-avatars.com/api/?name=${data.firstName}+${data.lastName}&background=random&color=fff`;
         }
@@ -191,7 +191,7 @@ function updateAvatarDisplay(photoUrl, firstName, lastName) {
   
   if (photoUrl) {
     // If there's a photo URL, use it
-    userAvatar.src = resolvePhotoUrl(photoUrl);
+    userAvatar.src = `/uploads/${photoUrl}`;
     console.log('✅ Updated avatar with photo URL');
   } else if (firstName && lastName) {
     // If no photo but we have a name, use initials

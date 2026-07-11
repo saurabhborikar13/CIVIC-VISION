@@ -92,7 +92,7 @@
       if (data.photo) {
         let avatarSrc = data.photo;
         if (!avatarSrc.startsWith('data:') && !avatarSrc.startsWith('http')) {
-            avatarSrc = resolvePhotoUrl(avatarSrc);
+            avatarSrc = `/uploads/${avatarSrc}`;
         }
         if (userAvatar) userAvatar.src = avatarSrc;
         if (ddAvatar) ddAvatar.src = avatarSrc;

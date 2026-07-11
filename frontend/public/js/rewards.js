@@ -169,7 +169,7 @@ function updateUserInterface(user) {
 function updateAvatarDisplay(user) {
     if (user.photo && user.photo.trim() !== '') {
         if (userAvatarEl) {
-            userAvatarEl.src = resolvePhotoUrl(user.photo);
+            userAvatarEl.src = `/uploads/${user.photo}`;
             userAvatarEl.style.display = 'block';
             userAvatarEl.onerror = () => {
                 userAvatarEl.style.display = 'none';
