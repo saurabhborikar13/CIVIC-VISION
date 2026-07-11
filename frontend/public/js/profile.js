@@ -178,15 +178,16 @@ document.addEventListener('DOMContentLoaded', function() {
           });
 
           if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.message || 'Failed to upload photo');
+            const errBody = await response.json();
+            // Backend error handler sends the message under "error", not "message"
+            throw new Error(errBody.error || errBody.message || 'Failed to upload photo');
           }
 
           const data = await response.json();
           
           if (data.success) {
-            // Update avatar with new photo URL
-            const photoUrl = `/uploads/${data.data.photo}`;
+            // data.data.photo is already a full Cloudinary URL — don't prefix it
+            const photoUrl = data.data.photo;
             updateAvatarDisplay(photoUrl);
             showMessage('Profile picture updated successfully');
           }
@@ -375,7 +376,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update avatar
       if (data.photo) {
-        updateAvatarDisplay(`/uploads/${data.photo}`);
+        // New photos are stored as full Cloudinary URLs. Old accounts uploaded
+        // before the Cloudinary migration may still have a bare filename saved —
+        // in that case, fall back to the old /uploads/ path.
+        const photoUrl = data.photo.startsWith('http') ? data.photo : `/uploads/${data.photo}`;
+        updateAvatarDisplay(photoUrl);
       } else {
         updateAvatarDisplay(null, data.firstName, data.lastName);
       }
