@@ -124,13 +124,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Function to update avatar display
   function updateAvatarDisplay(photoUrl, firstName, lastName) {
-    const profileAvatar = document.getElementById('profileAvatar');
+    // profileAvatar is the small header-dropdown DIV (not an <img>) — setting
+    // .src on it does nothing. The real large photo is #profileAvatarMain.
+    const profileAvatarMain = document.getElementById('profileAvatarMain');
     const userAvatar = document.getElementById('userAvatar');
     
     if (photoUrl) {
       // If there's a photo URL, use it
-      profileAvatar.src = photoUrl;
-      userAvatar.src = photoUrl;
+      if (profileAvatarMain) profileAvatarMain.src = photoUrl;
+      if (userAvatar) userAvatar.src = photoUrl;
       
       // Store the photo URL in localStorage
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -139,14 +141,12 @@ document.addEventListener('DOMContentLoaded', function() {
     } else if (firstName && lastName) {
       // If no photo but we have a name, use initials
       const initialsUrl = generateInitialsAvatar(firstName, lastName);
-      profileAvatar.src = initialsUrl;
-      userAvatar.src = initialsUrl;
+      if (profileAvatarMain) profileAvatarMain.src = initialsUrl;
+      if (userAvatar) userAvatar.src = initialsUrl;
     }
   }
   
   // Handle avatar upload
-  const profileAvatar = document.getElementById('profileAvatar');
-  
   if (avatarInput) {
     avatarInput.addEventListener('change', async function(e) {
       const file = e.target.files[0];
@@ -328,13 +328,18 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Function to show messages
   function showMessage(message, isError = false) {
+    // profile.html has no element with class "container" — the actual page
+    // wrapper is <main class="main-content">. Fall back safely if neither exists.
+    const target = document.querySelector('.main-content') || document.querySelector('.container') || document.body;
+    if (!target) return;
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${isError ? 'danger' : 'success'} alert-dismissible fade show`;
     alertDiv.innerHTML = `
       ${message}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     `;
-    document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+    target.insertBefore(alertDiv, target.firstChild);
     
     // Auto dismiss after 5 seconds
     setTimeout(() => {
@@ -393,102 +398,113 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Handle profile form submission
-  profileForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  // NOTE: profile.html currently has no <form class="profile-form">, so this
+  // block is guarded to avoid crashing on page load. The address/city/state/pinCode
+  // fields are already saved via the saveProfileBtn handler above; this block is
+  // effectively unused unless a matching <form> is added to the HTML.
+  if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    try {
-      const token = localStorage.getItem('token');
-      const formData = new FormData(profileForm);
-      const currentData = {
-        email: document.getElementById('email').value,
-        mobile: document.getElementById('mobile').value,
-        address: document.getElementById('address').value,
-        city: document.getElementById('city').value,
-        state: document.getElementById('state').value,
-        pinCode: document.getElementById('pinCode').value
-      };
+      try {
+        const token = localStorage.getItem('token');
+        const formData = new FormData(profileForm);
+        const currentData = {
+          email: document.getElementById('email').value,
+          mobile: document.getElementById('mobile').value,
+          address: document.getElementById('address').value,
+          city: document.getElementById('city').value,
+          state: document.getElementById('state').value,
+          pinCode: document.getElementById('pinCode').value
+        };
 
-      // Check if email or mobile is being updated
-      const currentUser = await fetch('/api/v1/users/me', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }).then(res => res.json());
+        // Check if email or mobile is being updated
+        const currentUser = await fetch('/api/v1/users/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => res.json());
 
-      if (currentUser.data.email !== currentData.email || currentUser.data.mobile !== currentData.mobile) {
-        const currentPassword = prompt('Please enter your current password to update email or mobile:');
-        if (!currentPassword) {
-          showMessage('Password is required to update email or mobile', true);
-          return;
+        if (currentUser.data.email !== currentData.email || currentUser.data.mobile !== currentData.mobile) {
+          const currentPassword = prompt('Please enter your current password to update email or mobile:');
+          if (!currentPassword) {
+            showMessage('Password is required to update email or mobile', true);
+            return;
+          }
+          currentData.currentPassword = currentPassword;
         }
-        currentData.currentPassword = currentPassword;
+
+        const response = await fetch('/api/v1/users/updateprofile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(currentData)
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to update profile');
+        }
+
+        showMessage('Profile updated successfully');
+        
+        // Refresh user data
+        getUserData();
+
+      } catch (error) {
+        showMessage(error.message, true);
       }
-
-      const response = await fetch('/api/v1/users/updateprofile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(currentData)
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
-      }
-
-      showMessage('Profile updated successfully');
-      
-      // Refresh user data
-      getUserData();
-
-    } catch (error) {
-      showMessage(error.message, true);
-    }
-  });
+    });
+  }
 
   // Handle password form submission
-  passwordForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  // NOTE: profile.html currently has no element with id="passwordForm" either
+  // (password changes go through the changePasswordBtn click handler above).
+  // Guarded the same way to avoid a page-load crash.
+  if (passwordForm) {
+    passwordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    try {
-      const token = localStorage.getItem('token');
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
+      try {
+        const token = localStorage.getItem('token');
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
-      if (newPassword !== confirmPassword) {
-        throw new Error('New passwords do not match');
+        if (newPassword !== confirmPassword) {
+          throw new Error('New passwords do not match');
+        }
+
+        const response = await fetch('/api/v1/users/updatepassword', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            currentPassword,
+            newPassword
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to update password');
+        }
+
+        // Update token in localStorage
+        localStorage.setItem('token', data.token);
+        
+        showMessage('Password updated successfully');
+        
+        // Clear password form
+        passwordForm.reset();
+
+      } catch (error) {
+        showMessage(error.message, true);
       }
-
-      const response = await fetch('/api/v1/users/updatepassword', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update password');
-      }
-
-      // Update token in localStorage
-      localStorage.setItem('token', data.token);
-      
-      showMessage('Password updated successfully');
-      
-      // Clear password form
-      passwordForm.reset();
-
-    } catch (error) {
-      showMessage(error.message, true);
-    }
-  });
+    });
+  }
 
   // Handle logout
   const logoutBtn = document.getElementById('logoutBtn');
