@@ -9,6 +9,7 @@ const CitizenProfile = require('../models/CitizenProfile');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
 const Achievement = require('../models/Achievement');
+const cloudinary = require('../config/cloudinary');
 
 // @desc    Get all users
 // @route   GET /api/v1/users
@@ -80,17 +81,9 @@ exports.deleteUser = asyncHandler(async (req, res, next) => {
     );
   }
 
-  // Delete user's photo if exists
-  if (user.photo && user.photo !== 'default.jpg') {
-    const filePath = path.join(
-      __dirname,
-      `../public/uploads/users/${user.photo}`
-    );
-    
-    if (fs.existsSync(filePath)) {
-      await fs.promises.unlink(filePath);
-    }
-  }
+  // Photos now live on Cloudinary as full URLs (not local filenames), so there's
+  // no local file to unlink. Optionally delete from Cloudinary using its public_id
+  // if you start storing that alongside the URL; skipped for now to keep this simple.
 
   await user.remove();
 
@@ -319,47 +312,32 @@ exports.uploadPhoto = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Image must be less than 2MB', 400));
   }
 
-  // Create custom filename with original extension
-  const ext = path.extname(file.name);
-  const fileName = `user-${req.user.id}-${Date.now()}${ext}`;
-
-  // Create uploads directory if it doesn't exist
-  const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-
-  // Move file to upload directory
-  const filePath = path.join(uploadsDir, fileName);
-  
   try {
-    await file.mv(filePath);
+    // Upload directly from memory to Cloudinary (express-fileupload gives file.data as a Buffer)
+    const result = await cloudinary.uploader.upload(
+      `data:${file.mimetype};base64,${file.data.toString('base64')}`,
+      { folder: 'civicsense/profiles', public_id: `user-${req.user.id}-${Date.now()}` }
+    );
 
-    // Delete old photo if exists
-    if (req.user.photo) {
-      const oldPhotoPath = path.join(uploadsDir, req.user.photo);
-      if (fs.existsSync(oldPhotoPath)) {
-        fs.unlinkSync(oldPhotoPath);
-      }
-    }
+    const photoUrl = result.secure_url;
 
     // Update user and citizen profile
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { photo: fileName },
+      { photo: photoUrl },
       { new: true }
     );
 
     if (user.profile) {
       await CitizenProfile.findByIdAndUpdate(
         user.profile,
-        { profileImage: fileName }
+        { profileImage: photoUrl }
       );
     }
 
     res.status(200).json({
       success: true,
-      data: { photo: fileName }
+      data: { photo: photoUrl }
     });
   } catch (err) {
     console.error('File upload error:', err);
@@ -370,6 +348,8 @@ exports.uploadPhoto = asyncHandler(async (req, res, next) => {
 // @desc    Resize user photo
 // @route   - (middleware)
 // @access  Private
+// NOTE: this middleware doesn't appear to be wired into any route in userRoutes.js —
+// left as-is since it's unused, but flagging in case you intended to chain it before uploadPhoto.
 exports.resizeUserPhoto = asyncHandler(async (req, res, next) => {
   if (!req.files) return next();
 

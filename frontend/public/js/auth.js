@@ -62,7 +62,7 @@ function setUserAvatar() {
         if (user.profileImage || user.photo) {
             const img = document.createElement('img');
             // Use profileImage if available, otherwise use photo
-            const imagePath = user.profileImage || (user.photo ? `/uploads/${user.photo}` : null);
+            const imagePath = user.profileImage || (user.photo ? user.photo : null);
             if (imagePath) {
                 img.src = imagePath;
             img.alt = 'Profile';

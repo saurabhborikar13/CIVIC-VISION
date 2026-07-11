@@ -6,39 +6,39 @@ const { v4: uuidv4 } = require('uuid');
 const Complaint = require('../models/Complaint');
 const { protect } = require('../middleware/auth');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/');
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${uuidv4()}${ext}`);
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const streamifier = require('streamifier'); // npm install streamifier
+const cloudinary = require('../config/cloudinary');
+const Complaint = require('../models/Complaint');
+const { protect } = require('../middleware/auth');
+
+// Store in memory instead of disk
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Only image files are allowed!'), false);
   }
 });
 
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image files are allowed!'), false);
-  }
+// Helper: upload a buffer to Cloudinary
+const uploadToCloudinary = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'civicsense/complaints' },
+      (error, result) => (result ? resolve(result) : reject(error))
+    );
+    streamifier.createReadStream(buffer).pipe(stream);
+  });
 };
 
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: fileFilter
-});
-
-// @desc    Create a new complaint
-// @route   POST /api/v1/complaints
-// @access  Private
 router.post('/', protect, upload.single('image'), async (req, res) => {
   try {
     const { issueType, description, latitude, longitude, address } = req.body;
-    
-    // Validate required fields
+
     if (!issueType || !description || !latitude || !longitude) {
       return res.status(400).json({
         success: false,
@@ -46,7 +46,6 @@ router.post('/', protect, upload.single('image'), async (req, res) => {
       });
     }
 
-    // Create complaint data
     const complaintData = {
       ticketId: `TKT-${Date.now()}-${Math.random().toString(36).substr(2, 4).toUpperCase()}`,
       user: req.user.id,
@@ -64,29 +63,23 @@ router.post('/', protect, upload.single('image'), async (req, res) => {
       comments: []
     };
 
-    // Add image path if uploaded
+    // Upload to Cloudinary and store the returned URL
     if (req.file) {
-      complaintData.images.push(`/uploads/${req.file.filename}`);
+      const result = await uploadToCloudinary(req.file.buffer);
+      complaintData.images.push(result.secure_url);
     }
 
     const complaint = await Complaint.create(complaintData);
-    
-    // Populate user data in response
     await complaint.populate('user', 'name email');
-    
-    res.status(201).json({
-      success: true,
-      data: complaint
-    });
 
+    res.status(201).json({ success: true, data: complaint });
   } catch (error) {
     console.error('Error creating complaint:', error);
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Error creating complaint'
-    });
+    res.status(500).json({ success: false, message: error.message || 'Error creating complaint' });
   }
 });
+
+
 
 // @desc    Get all complaints
 // @route   GET /api/v1/complaints

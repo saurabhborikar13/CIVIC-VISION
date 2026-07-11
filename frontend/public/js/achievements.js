@@ -253,7 +253,7 @@ function updateUserInterface(user) {
     const ddAvatar = document.getElementById('ddUserAvatar');
     if (ddAvatar) {
         if (user.photo) {
-            ddAvatar.src = `/uploads/${user.photo}`;
+            ddAvatar.src = user.photo;
         } else {
             ddAvatar.src = `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&background=random&color=fff`;
         }
@@ -267,7 +267,7 @@ function updateAvatarDisplay(user) {
     
     if (user.photo && user.photo.trim() !== '') {
         // Show image if available
-        userAvatarImg.src = `/uploads/${user.photo}`;
+        userAvatarImg.src = user.photo;
         userAvatarImg.style.display = 'block';
         if (avatarInitials) avatarInitials.style.display = 'none';
         

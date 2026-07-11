@@ -3,13 +3,14 @@ const router = express.Router();
 const axios = require('axios');
 const Report = require('../models/Report');
 const { sendReportNotification } = require('../services/emailService');
-const fs = require('fs');
-const path = require('path');
+const cloudinary = require('../config/cloudinary');
 const { protect } = require('../middleware/auth');
 
 // @route   POST api/reports
 // @desc    Create a new report
 // @access  Private (requires authentication)
+
+
 router.post('/', protect, async (req, res) => {
   try {
     console.log('Received POST /api/reports', req.body);
@@ -18,38 +19,26 @@ router.post('/', protect, async (req, res) => {
 
     const { title, description, location, category, images: incomingImages = [], userEmail, department } = req.body;
 
-    // Persist images to /uploads and build relative paths array
+    // Upload images to Cloudinary and collect their URLs
     const imagePaths = [];
     if (Array.isArray(incomingImages) && incomingImages.length > 0) {
-      const uploadsDir = path.join(__dirname, '../../uploads');
-      try {
-        if (!fs.existsSync(uploadsDir)) {
-          fs.mkdirSync(uploadsDir, { recursive: true });
+      for (const imgStr of incomingImages) {
+        if (!imgStr) continue;
+        try {
+          // Cloudinary accepts a raw base64 data URI directly (data:image/xxx;base64,...)
+          // If imgStr is already a data URI, this works as-is. If it's bare base64
+          // without the header, add a default one.
+          const dataUri = imgStr.startsWith('data:')
+            ? imgStr
+            : `data:image/jpeg;base64,${imgStr}`;
+
+          const result = await cloudinary.uploader.upload(dataUri, {
+            folder: 'civicsense/reports'
+          });
+          imagePaths.push(result.secure_url);
+        } catch (uploadErr) {
+          console.error('Error uploading image to Cloudinary:', uploadErr);
         }
-        incomingImages.forEach((imgStr, idx) => {
-          if (!imgStr) return;
-
-          let base64 = imgStr;
-          let extension = 'jpg';
-
-          // If we received a full data URL, separate header and detect extension
-          const match = imgStr.match(/^data:(image\/\w+);base64,(.+)$/);
-          if (match) {
-            extension = match[1].split('/')[1];
-            base64 = match[2];
-          }
-
-          const filename = `report_${Date.now()}_${idx}.${extension}`;
-          const filePath = path.join(uploadsDir, filename);
-          try {
-            fs.writeFileSync(filePath, Buffer.from(base64, 'base64'));
-            imagePaths.push(`/uploads/${filename}`);
-          } catch (writeErr) {
-            console.error('Error writing image file:', writeErr);
-          }
-        });
-      } catch (dirErr) {
-        console.error('Error ensuring uploads directory:', dirErr);
       }
     }
     
