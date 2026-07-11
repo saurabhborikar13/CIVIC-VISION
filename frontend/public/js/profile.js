@@ -186,8 +186,9 @@ document.addEventListener('DOMContentLoaded', function() {
           const data = await response.json();
           
           if (data.success) {
-            // data.data.photo is already a full Cloudinary URL — don't prefix it
-            const photoUrl = data.data.photo;
+            // data.data.photo is already a full Cloudinary URL — resolvePhotoUrl handles
+            // that plus the old local-filename case for any accounts from before the migration
+            const photoUrl = resolvePhotoUrl(data.data.photo);
             updateAvatarDisplay(photoUrl);
             showMessage('Profile picture updated successfully');
           }
@@ -381,10 +382,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Update avatar
       if (data.photo) {
-        // New photos are stored as full Cloudinary URLs. Old accounts uploaded
-        // before the Cloudinary migration may still have a bare filename saved —
-        // in that case, fall back to the old /uploads/ path.
-        const photoUrl = data.photo.startsWith('http') ? data.photo : `/uploads/${data.photo}`;
+        // resolvePhotoUrl (from auth.js) handles Cloudinary URLs and old local filenames alike
+        const photoUrl = resolvePhotoUrl(data.photo);
         updateAvatarDisplay(photoUrl);
       } else {
         updateAvatarDisplay(null, data.firstName, data.lastName);

@@ -97,6 +97,15 @@ window.addEventListener('DOMContentLoaded', () => {
     setUserAvatar();
 });
 
+
+function resolvePhotoUrl(photo) {
+    if (!photo) return null;
+    if (photo.startsWith('http://') || photo.startsWith('https://')) return photo;
+    if (photo.startsWith('/')) return photo; // already a path like /uploads/x.jpg
+    return `/uploads/${photo}`;
+}
+
+window.resolvePhotoUrl = resolvePhotoUrl;
 // Export for inline event handlers
 window.requireLogin = requireLogin;
 window.logout = logout;

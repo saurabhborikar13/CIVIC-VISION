@@ -98,7 +98,7 @@ async function loadUserData() {
       const ddAvatar = document.getElementById('ddUserAvatar');
       if (ddAvatar) {
           if (userData.data.photo) {
-              ddAvatar.src = `/uploads/${userData.data.photo}`;
+              ddAvatar.src =  resolvePhotoUrl(userData.data.photo);
           } else {
               ddAvatar.src = `https://ui-avatars.com/api/?name=${userData.data.firstName}+${userData.data.lastName}&background=random&color=fff`;
           }
@@ -119,7 +119,7 @@ function updateAvatarDisplay(photoUrl, firstName, lastName) {
   
   if (photoUrl) {
     // If there's a photo URL, use it
-    userAvatar.src = `/uploads/${photoUrl}`;
+    userAvatar.src = resolvePhotoUrl(photoUrl);
     userAvatar.style.display = 'block';
     if (avatarInitials) avatarInitials.style.display = 'none';
     

@@ -133,7 +133,7 @@
             <div class="row g-3 mt-4">
               ${(report.images ?? report.photos).map(src => `
                 <div class="col-6 col-md-4">
-                  <img src="${src.startsWith('/') ? src : `/uploads/${src}`}" class="img-fluid rounded shadow-sm" alt="Report image">
+                  <img src="${src.startsWith('/') ? src :resolvePhotoUrl(src)}" class="img-fluid rounded shadow-sm" alt="Report image">
                 </div>
               `).join('')}
             </div>
