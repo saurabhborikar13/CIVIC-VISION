@@ -1,0 +1,15 @@
+/* Landing page styles */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+.hero {
+    background: linear-gradient(135deg, #16233b 0%, #3c5378 100%);
+    color:#fff;
+    padding:120px 0 100px;
+    position: relative;
+    overflow:hidden;
+    border-bottom: 4px solid #b8863b;
+  }
+  .hero h1{font-family:'Fraunces', Georgia, serif; font-weight:700;}
+  .hero p.lead{font-size:1.25rem;}
+  .section-title{font-family:'Fraunces', Georgia, serif; font-weight:700;margin-bottom:1.5rem;color:#16233b;}
+  .card-hover:hover{transform:translateY(-4px);box-shadow:0 6px 20px rgba(22,35,59,.12);}

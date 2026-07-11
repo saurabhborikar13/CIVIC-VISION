@@ -1,0 +1,54 @@
+# Environment variables — NEVER commit these
+.env
+.env.*
+.env.example
+backend/.env
+backend/.env.example
+frontend/.env
+frontend/.env.example
+adminportal/**/.env
+render.yaml
+# Node modules
+node_modules/
+**/node_modules/
+
+# .gitignore
+node_modules/
+.env
+.env.local
+*.log
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Upload directories (user-generated content)
+uploads/
+**/uploads/
+!uploads/.gitkeep
+
+# Build output
+dist/
+build/
+
+# Large media files
+*.mp4
+*.mov
+*.avi
+*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# Server backup files
+*.backup
+
+# Test images
+Test Images/

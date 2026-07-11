@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+body {
+    background: #16233b;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 26px 26px;
+    min-height: 100vh;
+    font-family: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+}
+.civic-card {
+    background: #fff;
+    border-radius: 10px;
+    border-top: 4px solid #b8863b;
+    box-shadow: 0 20px 45px -12px rgba(22, 35, 59, 0.35);
+    border-left: 1px solid #d8dee7;
+    border-right: 1px solid #d8dee7;
+    border-bottom: 1px solid #d8dee7;
+    padding: 2rem 2.5rem;
+    max-width: 640px;
+    width: 100%;
+    margin: 2rem auto;
+    animation: fadeIn 0.7s;
+}
+.civic-title {
+    font-family: 'Fraunces', Georgia, serif;
+    color: #16233b;
+    letter-spacing: -0.01em;
+    font-weight: 700;
+}
+.toggle-btn {
+    background: #eef1f6;
+    border: none;
+    color: #16233b;
+    font-weight: 600;
+    margin: 0 0.25rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.toggle-btn.active, .toggle-btn:hover {
+    background: #16233b;
+    color: #fff;
+}
+.form-label {
+    font-weight: 500;
+}
+.form-control:focus {
+    border-color: #b8863b;
+    box-shadow: 0 0 0 2px #b8863b33;
+}
+.role-select {
+    background: #eef1f6;
+}
+.otp-section {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+.otp-input {
+    width: 2.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-right: 0.4rem;
+}
+.resend-btn[disabled] {
+    opacity: 0.5;
+}
+.success-msg, .error-msg {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+.success-msg {
+    background: #dceee9;
+    color: #205e54;
+}
+.error-msg {
+    background: #f6dcd5;
+    color: #8c3722;
+}
+@media (max-width: 600px) {
+    .civic-card {
+        padding: 1.2rem 0.5rem;
+        max-width: 98vw;
+    }
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}

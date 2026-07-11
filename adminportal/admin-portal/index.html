@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Vision | Admin Login</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="css/common.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="floating-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <div class="login-wrapper">
+    <form id="login-form" class="card">
+      <div class="admin-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      
+      <h2 class="title">Admin Portal</h2>
+      
+      <div class="admin-badge">
+        <i class="fas fa-user-shield"></i>
+        <span>Department Access</span>
+      </div>
+
+      <div class="form-control">
+        <label for="email">Department Email</label>
+        <div class="input-wrapper">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="email" placeholder="department@civicvision.gov" required>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label for="password">Secure Password</label>
+        <div class="input-wrapper">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="password" placeholder="Enter your secure password" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Access Admin Panel</span>
+        <div class="spinner"></div>
+      </button>
+
+      <div id="error-msg" class="error"></div>
+
+      <div class="security-features">
+        <div class="security-item">
+          <i class="fas fa-shield-check security-icon"></i>
+          <span>256-bit SSL Encryption</span>
+        </div>
+        <div class="security-item">
+          <i class="fas fa-user-lock security-icon"></i>
+          <span>Multi-factor Authentication</span>
+        </div>
+        <div class="security-item">
+          <i class="fas fa-history security-icon"></i>
+          <span>Session Timeout Protection</span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <a href="#" class="help-link">
+    <i class="fas fa-question-circle"></i>
+    Need Help?
+  </a>
+
+  <div class="version-info">
+    CivicVision Admin v2.1.0
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const submitBtn = form.querySelector('.btn-primary');
+      const errorMsg = document.getElementById('error-msg');
+
+      // Enhanced form submission with loading state
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous errors
+        errorMsg.classList.remove('show');
+        errorMsg.textContent = '';
+        
+        // Add loading state
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+        
+        // Simulate authentication delay
+        setTimeout(() => {
+          // Remove loading state
+          submitBtn.classList.remove('loading');
+          submitBtn.disabled = false;
+          
+          // Call original login function if it exists
+          if (typeof window.handleLogin === 'function') {
+            window.handleLogin(e);
+          } else {
+            // Fallback validation
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!email || !password) {
+              showError('Please fill in all fields');
+              return;
+            }
+            
+            if (!isValidEmail(email)) {
+              showError('Please enter a valid email address');
+              return;
+            }
+            
+            // Here you would typically make an API call
+            console.log('Login attempt:', { email, password: '***' });
+          }
+        }, 1000);
+      });
+
+      // Show error message
+      function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.classList.add('show');
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          errorMsg.classList.remove('show');
+        }, 5000);
+      }
+
+      // Email validation
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      // Enhanced input interactions
+      [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.style.transform = 'translateY(0)';
+        });
+
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            form.dispatchEvent(new Event('submit'));
+          }
+        });
+      });
+
+      // Clear error on input
+      [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', function() {
+          if (errorMsg.classList.contains('show')) {
+            errorMsg.classList.remove('show');
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- Original scripts -->
+  <script src="js/apiBase.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

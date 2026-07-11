@@ -1,0 +1,212 @@
+/* ============================================================
+   Dashboard Specific Styles
+   Modern admin interface with clean data presentation
+   ============================================================ */
+
+/* ---- Header ------------------------------------------------ */
+header.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+/* ---- Tab Navigation ---------------------------------------- */
+.tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.tab-link {
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  border: 0;
+  border-radius: 60px;
+  font-weight: 500;
+  color: var(--neutral-500);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.tab-link.active,
+.tab-link:hover {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(79, 110, 247, 0.2);
+}
+
+#tab-content {
+  padding: 0;
+}
+
+/* ---- Activity Timeline ------------------------------------- */
+.activity-timeline {
+  padding-left: 2rem;
+  position: relative;
+}
+
+.activity-timeline::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--neutral-200);
+}
+
+.activity-item {
+  position: relative;
+  padding-bottom: 1.5rem;
+  padding-left: 1.8rem;
+}
+
+.activity-item::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 100%;
+  background: var(--primary);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(79, 110, 247, 0.2);
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--neutral-400);
+}
+
+/* ---- Employee Card ----------------------------------------- */
+.employee-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.employee-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.employee-info {
+  flex: 1;
+}
+
+/* ---- Action Buttons in Tables ------------------------------ */
+.action-btn {
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: var(--primary-gradient);
+  color: #fff;
+  transition: var(--transition);
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 110, 247, 0.3);
+}
+
+/* ---- Modal Customization ----------------------------------- */
+.modal-header {
+  border-bottom: 1px solid var(--neutral-200);
+  padding: 1.25rem 1.5rem;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--neutral-200);
+  padding: 1rem 1.5rem;
+}
+
+.modal-title {
+  font-weight: 600;
+}
+
+/* ---- Status Badges (Dashboard specific) -------------------- */
+.badge.bg-warning {
+  background-color: var(--warning) !important;
+  color: #4d3a0a;
+}
+
+.badge.bg-success {
+  background-color: var(--success) !important;
+  color: #0b3b2a;
+}
+
+.badge.bg-info {
+  background-color: var(--info) !important;
+  color: #0f2b4f;
+}
+
+.badge.bg-danger {
+  background-color: var(--danger) !important;
+  color: #6b1f1f;
+}
+
+/* ---- Responsive Tables (Mobile First) ---------------------- */
+@media (max-width: 768px) {
+  .table-responsive {
+    border: 0;
+    border-radius: 20px;
+    overflow-x: auto;
+  }
+  
+  .table thead {
+    display: none;
+  }
+  
+  .table tr {
+    display: block;
+    background: #fff;
+    border-radius: 20px;
+    padding: 0.5rem 0;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--neutral-100);
+  }
+  
+  .table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--neutral-500);
+    font-size: 0.8rem;
+  }
+  
+  .table td:last-child::before {
+    display: none;
+  }
+  
+  .table td:last-child {
+    justify-content: flex-end;
+  }
+  
+  .table td:first-child {
+    border-radius: 0;
+  }
+  
+  .table td:last-child {
+    border-radius: 0;
+  }
+}
