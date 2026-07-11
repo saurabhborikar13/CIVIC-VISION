@@ -302,26 +302,29 @@ exports.uploadPhoto = asyncHandler(async (req, res, next) => {
 
   const file = req.files.photo;
 
-  // Validate file type
   if (!file.mimetype.startsWith('image')) {
     return next(new ErrorResponse('Please upload an image file', 400));
   }
 
-  // Check file size (max 2MB)
   if (file.size > 2 * 1024 * 1024) {
     return next(new ErrorResponse('Image must be less than 2MB', 400));
   }
 
   try {
-    // Upload directly from memory to Cloudinary (express-fileupload gives file.data as a Buffer)
-    const result = await cloudinary.uploader.upload(
-      `data:${file.mimetype};base64,${file.data.toString('base64')}`,
-      { folder: 'civicsense/profiles', public_id: `user-${req.user.id}-${Date.now()}` }
-    );
+    // useTempFiles mode gives us file.tempFilePath, not file.data —
+    // Cloudinary's upload() accepts a local file path directly.
+    const result = await cloudinary.uploader.upload(file.tempFilePath, {
+      folder: 'civicsense/profiles',
+      public_id: `user-${req.user.id}-${Date.now()}`
+    });
+
+    // Clean up the temp file now that it's uploaded
+    fs.unlink(file.tempFilePath, (err) => {
+      if (err) console.error('Failed to remove temp upload file:', err);
+    });
 
     const photoUrl = result.secure_url;
 
-    // Update user and citizen profile
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { photo: photoUrl },
@@ -329,10 +332,7 @@ exports.uploadPhoto = asyncHandler(async (req, res, next) => {
     );
 
     if (user.profile) {
-      await CitizenProfile.findByIdAndUpdate(
-        user.profile,
-        { profileImage: photoUrl }
-      );
+      await CitizenProfile.findByIdAndUpdate(user.profile, { profileImage: photoUrl });
     }
 
     res.status(200).json({
