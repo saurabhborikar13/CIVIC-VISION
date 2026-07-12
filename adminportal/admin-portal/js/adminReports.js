@@ -3,7 +3,7 @@
 // Requires Bootstrap 5 and Font-Awesome present in page.
 
 // API Configuration
-const API_BASE = 'http://localhost:3005/api'; // Update this if your API is hosted elsewhere
+const API_BASE = 'https://civic-vision-admin.onrender.com'; // Update this if your API is hosted elsewhere
 
 /* NOTE: the backend routes expected:
    GET    /api/complaints            w/ query params (see loadReports)

@@ -2,7 +2,7 @@
 // Ensures all fetch requests that target /api/* are sent to the admin backend on port 3005
 (function() {
   const isLocalDev = /localhost|127\.0\.0\.1/.test(window.location.hostname);
-  const ADMIN_BASE_ORIGIN = isLocalDev ? 'http://localhost:3005' : window.location.origin;
+  const ADMIN_BASE_ORIGIN = 'https://civic-vision-admin.onrender.com';
   if (!window.fetch) return; // Fail-safe
 
   const originalFetch = window.fetch.bind(window);

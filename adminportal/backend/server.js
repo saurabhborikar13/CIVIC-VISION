@@ -9,6 +9,7 @@ const app = express();
 // CORS Configuration
 const corsOptions = {
   origin: [
+    'https://civic-vision-admin-frontend.onrender.com',
     'http://localhost:5000', 
     'http://localhost:3005', 
     'http://localhost:3000',  // Added localhost port 3000
