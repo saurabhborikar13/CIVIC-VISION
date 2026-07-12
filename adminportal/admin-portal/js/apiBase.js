@@ -1,8 +1,17 @@
-// apiBase.js
-// Ensures all fetch requests that target /api/* are sent to the admin backend on port 3005
+  // apiBase.js
 (function() {
   const isLocalDev = /localhost|127\.0\.0\.1/.test(window.location.hostname);
-  const ADMIN_BASE_ORIGIN = 'https://civic-vision-admin.onrender.com';
+  const ADMIN_BASE_ORIGIN = isLocalDev ? 'http://localhost:3005' : 'https://civic-vision-admin.onrender.com';
+
+  // Resolve any image/file path returned by the backend into a full URL.
+  // Handles: full URLs (already absolute), relative /uploads/... paths, and empty values.
+  window.resolveAdminImageUrl = function(path) {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    if (path.startsWith('/')) return `${ADMIN_BASE_ORIGIN}${path}`;
+    return `${ADMIN_BASE_ORIGIN}/${path}`;
+  };
+
   if (!window.fetch) return; // Fail-safe
 
   const originalFetch = window.fetch.bind(window);

@@ -18,26 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ------------------------------------------------------------------
    *  DOM refs
    * ----------------------------------------------------------------*/
-  const reportsList      = document.getElementById('reportsList');
-  const searchInput      = document.getElementById('searchReports');
-  const statusFilter     = document.getElementById('filter-status');
-  const timeFilter       = document.getElementById('filter-time');
-  const deadlineFilter   = document.getElementById('filter-deadline');
-  const applyFiltersBtn  = document.getElementById('btn-apply-filters');
-  const paginationEl     = document.getElementById('pagination');
+  const reportsList = document.getElementById('reportsList');
+  const searchInput = document.getElementById('searchReports');
+  const statusFilter = document.getElementById('filter-status');
+  const timeFilter = document.getElementById('filter-time');
+  const deadlineFilter = document.getElementById('filter-deadline');
+  const applyFiltersBtn = document.getElementById('btn-apply-filters');
+  const paginationEl = document.getElementById('pagination');
 
   // Modals and forms
   const reportDetailsModal = new bootstrap.Modal(document.getElementById('reportDetailsModal'));
-  const editReportModal    = new bootstrap.Modal(document.getElementById('editReportModal'));
-  const editForm           = document.getElementById('edit-report-form');
+  const editReportModal = new bootstrap.Modal(document.getElementById('editReportModal'));
+  const editForm = document.getElementById('edit-report-form');
 
   /* ------------------------------------------------------------------
    *  State
    * ----------------------------------------------------------------*/
-  let currentPage   = 1;
+  let currentPage = 1;
   const itemsPerPage = 10;
-  let totalItems    = 0;
-  let reports       = [];
+  let totalItems = 0;
+  let reports = [];
   let debounceTimer;
   let currentReportId;
   let searchQuery = '';
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showCompleteReportModal(reportId);
         return;
       }
-      
+
       // View completion image
       const viewImageBtn = e.target.closest('.view-completion-image');
       if (viewImageBtn) {
@@ -90,33 +90,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingSpinner = document.getElementById('imageLoadingSpinner');
         const downloadBtn = document.getElementById('downloadImageBtn');
         const imageInfo = document.getElementById('imageInfo');
-        
+
         if (!imagePreview || !loadingSpinner || !downloadBtn || !imageInfo) {
           console.error('Required elements not found in the DOM');
           return;
         }
-        
+
         // Show loading state
         imagePreview.style.display = 'none';
         loadingSpinner.style.display = 'block';
-        
+
         // Set up the image
         const img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           // Update image source
           imagePreview.src = imageUrl;
           imagePreview.style.display = 'block';
           loadingSpinner.style.display = 'none';
-          
+
           // Update download link
           downloadBtn.href = imageUrl;
           downloadBtn.download = `completion-${Date.now()}.${imageUrl.split('.').pop().split('?')[0]}`;
-          
+
           // Update image info
           imageInfo.textContent = `${this.naturalWidth} × ${this.naturalHeight}px`;
         };
-        
-        img.onerror = function() {
+
+        img.onerror = function () {
           if (loadingSpinner) {
             loadingSpinner.innerHTML = `
               <div class="text-center">
@@ -126,10 +126,10 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
           }
         };
-        
+
         // Start loading the image
         img.src = imageUrl;
-        
+
         // Show the modal
         const modalElement = document.getElementById('completionImageModal');
         if (modalElement) {
@@ -138,10 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           console.error('Modal element not found');
         }
-        
+
         return;
       }
-      
+
       // View employee details
       const employeeBtn = e.target.closest('.view-employee');
       if (employeeBtn) {
@@ -227,23 +227,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', async (e) => {
       const btn = e.target.closest('.assign-report');
       if (!btn) return;
-      
+
       const reportId = btn.dataset.id;
       currentReportId = reportId;
-      
+
       // Show the modal
       const assignModal = new bootstrap.Modal(document.getElementById('assignEmployeeModal'));
       assignModal.show();
-      
+
       // Load unassigned employees
       await loadUnassignedEmployees();
     });
-    
+
     // Employee search handler
     document.getElementById('employeeSearch')?.addEventListener('input', (e) => {
       const searchTerm = e.target.value.toLowerCase();
       const rows = document.querySelectorAll('#employeeList tr[data-employee]');
-      
+
       let visibleCount = 0;
       rows.forEach(row => {
         const name = row.dataset.name.toLowerCase();
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         row.style.display = isVisible ? '' : 'none';
         if (isVisible) visibleCount++;
       });
-      
+
       // Show/hide no results message
       const noResults = document.getElementById('noEmployees');
       if (visibleCount === 0 && searchTerm) {
@@ -265,15 +265,15 @@ document.addEventListener('DOMContentLoaded', () => {
         noResults.classList.add('d-none');
       }
     });
-    
+
     // Handle assign button click in the modal
     document.getElementById('employeeList')?.addEventListener('click', async (e) => {
       const assignBtn = e.target.closest('.assign-employee-btn');
       if (!assignBtn) return;
-      
+
       const employeeId = assignBtn.dataset.employeeId;
       const reportId = currentReportId;
-      
+
       try {
         showLoading(true);
         const assignRes = await fetch(`/api/complaints/${reportId}/assign`, {
@@ -281,16 +281,16 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Content-Type': 'application/json', ...authHeaders() },
           body: JSON.stringify({ employeeId })
         });
-        
+
         if (!assignRes.ok) {
           const error = await assignRes.json().catch(() => ({}));
           throw new Error(error.message || 'Failed to assign employee');
         }
-        
+
         // Close the modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('assignEmployeeModal'));
         modal.hide();
-        
+
         showToast('success', 'Employee assigned successfully');
         await loadReports();
       } catch (err) {
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading(false);
       }
     });
-    
+
     // Load unassigned employees
     async function loadUnassignedEmployees() {
       console.log('Auth token:', localStorage.getItem('token'));
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Token department:', tokenData?.department);
       const employeeList = document.getElementById('employeeList');
       const noEmployees = document.getElementById('noEmployees');
-      
+
       try {
         employeeList.innerHTML = `
           <tr>
@@ -319,39 +319,39 @@ document.addEventListener('DOMContentLoaded', () => {
               Loading employees...
             </td>
           </tr>`;
-        
+
         noEmployees.classList.add('d-none');
-        
+
         // Add timestamp to prevent caching
         const timestamp = new Date().getTime();
         const url = `/api/employees/unassigned?t=${timestamp}`;
-        
+
         console.log('Fetching unassigned employees from:', url);
-        
-        const res = await fetch(url, { 
+
+        const res = await fetch(url, {
           headers: authHeaders(),
           cache: 'no-store'  // Prevent caching
         });
-        
+
         console.log('Response status:', res.status);
-        
+
         if (!res.ok) {
           const errorText = await res.text();
           console.error('Error response:', errorText);
           throw new Error(`Failed to load employees: ${res.status} ${res.statusText}`);
         }
-        
+
         const response = await res.json();
         console.log('Employees data:', response);
-        
+
         const employees = response.data || [];
-        
+
         if (employees.length === 0) {
           employeeList.innerHTML = '';
           noEmployees.classList.remove('d-none');
           return;
         }
-        
+
         employeeList.innerHTML = employees.map(emp => `
           <tr data-employee data-name="${emp.name}" data-employee-id="${emp.employeeId}">
             <td>
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </td>
           </tr>
         `).join('');
-        
+
       } catch (err) {
         console.error('Error loading employees:', err);
         employeeList.innerHTML = `
@@ -393,14 +393,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-  // Edit form submit
+    // Edit form submit
     editForm?.addEventListener('submit', handleEditSubmit);
   }
 
   /* ------------------------------------------------------------------
    *  API helpers
    * ----------------------------------------------------------------*/
-  function authHeaders(){
+  function authHeaders() {
     const token = localStorage.getItem('token');
     if (!token) {
       console.error('No authentication token found in localStorage');
@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return {};
     }
-    return { 
+    return {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
@@ -429,20 +429,20 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Failed to decode token:', e);
       return null;
     }
-  } 
+  }
 
-  
+
   async function loadReports() {
     console.log('loadReports called, showing loading...');
-    
+
     // Ensure any existing loading overlay is removed first
     const existingLoader = document.getElementById('loading');
     if (existingLoader) {
       existingLoader.remove();
     }
-    
+
     showLoading(true);
-    
+
     try {
       console.log('Current page:', currentPage, 'Items per page:', itemsPerPage);
       const params = new URLSearchParams();
@@ -457,9 +457,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
         let startDate;
         switch (timeFilter.value) {
-          case '24h': startDate = new Date(now.getTime() - 24*60*60*1000); break;
-          case '7d':  startDate = new Date(now.getTime() - 7*24*60*60*1000); break;
-          case '30d': startDate = new Date(now.getTime() - 30*24*60*60*1000); break;
+          case '24h': startDate = new Date(now.getTime() - 24 * 60 * 60 * 1000); break;
+          case '7d': startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); break;
+          case '30d': startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); break;
         }
         if (startDate) params.set('startDate', startDate.toISOString());
       }
@@ -467,15 +467,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Deadline translation -> deadlineBefore/After
       if (deadlineFilter?.value) {
         const todayStart = new Date();
-        todayStart.setHours(0,0,0,0);
-        const todayEnd = new Date(todayStart.getTime() + 24*60*60*1000 - 1);
+        todayStart.setHours(0, 0, 0, 0);
+        const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000 - 1);
         if (deadlineFilter.value === 'overdue') {
           params.set('deadlineBefore', todayStart.toISOString());
         } else if (deadlineFilter.value === 'today') {
           params.set('deadlineAfter', todayStart.toISOString());
           params.set('deadlineBefore', todayEnd.toISOString());
         } else if (deadlineFilter.value === 'week') {
-          const weekEnd = new Date(todayStart.getTime() + 7*24*60*60*1000);
+          const weekEnd = new Date(todayStart.getTime() + 7 * 24 * 60 * 60 * 1000);
           params.set('deadlineAfter', todayStart.toISOString());
           params.set('deadlineBefore', weekEnd.toISOString());
         }
@@ -489,12 +489,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (Object.keys(headers).length === 0) {
         return;
       }
-      
+
       // Make the API call
       const res = await fetch(`/api/complaints?${params.toString()}`, {
         headers: headers
       });
-      
+
       if (!res.ok) {
         if (res.status === 401) {
           // If unauthorized, clear token and redirect to login
@@ -530,21 +530,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-/* ------------------------------------------------------------------
- *  Render list & helpers
- * ----------------------------------------------------------------*/
-function renderReports() {
-  console.log('renderReports called with reports:', reports);
-  
-  try {
-    if (!reportsList) {
-      console.error('reportsList element not found in DOM');
-      return;
-    }
-    
-    if (!reports || !Array.isArray(reports) || reports.length === 0) {
-      console.log('No reports to display, showing empty state');
-      reportsList.innerHTML = `
+  /* ------------------------------------------------------------------
+   *  Render list & helpers
+   * ----------------------------------------------------------------*/
+  function renderReports() {
+    console.log('renderReports called with reports:', reports);
+
+    try {
+      if (!reportsList) {
+        console.error('reportsList element not found in DOM');
+        return;
+      }
+
+      if (!reports || !Array.isArray(reports) || reports.length === 0) {
+        console.log('No reports to display, showing empty state');
+        reportsList.innerHTML = `
         <div class="col-12 text-center py-5">
           <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
           <p class="text-muted">No reports found.</p>
@@ -552,97 +552,97 @@ function renderReports() {
             <i class="fas fa-sync-alt me-2"></i>Refresh
           </button>
         </div>`;
-      return;
-    }
+        return;
+      }
 
-    console.log('Rendering', reports.length, 'reports');
-    reportsList.innerHTML = reports.map(r => reportCardHTML(r)).join('');
+      console.log('Rendering', reports.length, 'reports');
+      reportsList.innerHTML = reports.map(r => reportCardHTML(r)).join('');
 
-    // Attach click handlers
-    const viewButtons = reportsList.querySelectorAll('.view-details');
-    console.log('Found', viewButtons.length, 'view buttons');
-    viewButtons.forEach(btn => {
-      btn.addEventListener('click', () => viewReportDetails(btn.dataset.id));
-    });
-    
-    const editButtons = reportsList.querySelectorAll('.edit-report');
-    console.log('Found', editButtons.length, 'edit buttons');
-    editButtons.forEach(btn => {
-      btn.addEventListener('click', () => openEditModal(btn.dataset.id));
-    });
-    
-    const deleteButtons = reportsList.querySelectorAll('.delete-report');
-    console.log('Found', deleteButtons.length, 'delete buttons');
-    deleteButtons.forEach(btn => {
-      btn.addEventListener('click', () => confirmDeleteReport(btn.dataset.id));
-    });
-  } catch (error) {
-    console.error('Error in renderReports:', error);
-    reportsList.innerHTML = `
+      // Attach click handlers
+      const viewButtons = reportsList.querySelectorAll('.view-details');
+      console.log('Found', viewButtons.length, 'view buttons');
+      viewButtons.forEach(btn => {
+        btn.addEventListener('click', () => viewReportDetails(btn.dataset.id));
+      });
+
+      const editButtons = reportsList.querySelectorAll('.edit-report');
+      console.log('Found', editButtons.length, 'edit buttons');
+      editButtons.forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+      });
+
+      const deleteButtons = reportsList.querySelectorAll('.delete-report');
+      console.log('Found', deleteButtons.length, 'delete buttons');
+      deleteButtons.forEach(btn => {
+        btn.addEventListener('click', () => confirmDeleteReport(btn.dataset.id));
+      });
+    } catch (error) {
+      console.error('Error in renderReports:', error);
+      reportsList.innerHTML = `
       <div class="col-12 text-center py-5">
         <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
         <p class="text-danger">Error loading reports. Please try again.</p>
         <button class="btn btn-primary" onclick="window.location.reload()">Reload Page</button>
       </div>`;
-  }
-}
-
-/**
- * Shows detailed employee information in a modal
- * @param {Object} employee - Employee data object
- * @param {Object} reportData - Optional report data if available
- */
-async function showEmployeeDetails(employee) {
-  if (!employee) return;
-
-  // Basic Info
-  const name = employee.name || 'Employee';
-  const employeeId = employee.employeeId || 'N/A';
-  const department = employee.department || 'Not specified';
-  const email = employee.email || '';
-  const phone = employee.phone || '';
-  const status = employee.status || 'Active';
-  const role = employee.role || 'Field Agent';
-  const photoUrl = employee.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D6EFD&color=fff&size=160`;
-
-  // Set basic info
-  document.querySelectorAll('#employeeName').forEach(el => el.textContent = name);
-  document.getElementById('employeeId').textContent = `ID: ${employeeId}`;
-  document.getElementById('employeeDepartment').textContent = department;
-  document.getElementById('employeeDepartmentBadge').textContent = department;
-  document.getElementById('employeeStatus').textContent = status.charAt(0).toUpperCase() + status.slice(1);
-  document.getElementById('employeeRole').textContent = role;
-  
-  // Set photo
-  const photoElement = document.getElementById('employeePhoto');
-  if (photoElement) {
-    photoElement.src = photoUrl;
-    photoElement.alt = name;
+    }
   }
 
-  // Contact Info
-  const emailLink = document.getElementById('employeeEmail');
-  if (email) {
-    emailLink.textContent = email;
-    emailLink.href = `mailto:${email}`;
-    emailLink.closest('.d-flex').style.display = 'flex';
-  } else {
-    emailLink.closest('.d-flex').style.display = 'none';
-  }
-  
-  const phoneLink = document.getElementById('employeePhone');
-  if (phone) {
-    phoneLink.textContent = phone;
-    phoneLink.href = `tel:${phone}`;
-    phoneLink.closest('.d-flex').style.display = 'flex';
-  } else {
-    phoneLink.closest('.d-flex').style.display = 'none';
-  }
+  /**
+   * Shows detailed employee information in a modal
+   * @param {Object} employee - Employee data object
+   * @param {Object} reportData - Optional report data if available
+   */
+  async function showEmployeeDetails(employee) {
+    if (!employee) return;
 
-  // Report Info
-  const assignedReportInfo = document.getElementById('assignedReportInfo');
-  if (employee.reportId) {
-    assignedReportInfo.innerHTML = `
+    // Basic Info
+    const name = employee.name || 'Employee';
+    const employeeId = employee.employeeId || 'N/A';
+    const department = employee.department || 'Not specified';
+    const email = employee.email || '';
+    const phone = employee.phone || '';
+    const status = employee.status || 'Active';
+    const role = employee.role || 'Field Agent';
+    // const photoUrl = employee.photo || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D6EFD&color=fff&size=160`;
+    const photoUrl = resolveAdminImageUrl(employee.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D6EFD&color=fff&size=160`;
+    // Set basic info
+    document.querySelectorAll('#employeeName').forEach(el => el.textContent = name);
+    document.getElementById('employeeId').textContent = `ID: ${employeeId}`;
+    document.getElementById('employeeDepartment').textContent = department;
+    document.getElementById('employeeDepartmentBadge').textContent = department;
+    document.getElementById('employeeStatus').textContent = status.charAt(0).toUpperCase() + status.slice(1);
+    document.getElementById('employeeRole').textContent = role;
+
+    // Set photo
+    const photoElement = document.getElementById('employeePhoto');
+    if (photoElement) {
+      photoElement.src = photoUrl;
+      photoElement.alt = name;
+    }
+
+    // Contact Info
+    const emailLink = document.getElementById('employeeEmail');
+    if (email) {
+      emailLink.textContent = email;
+      emailLink.href = `mailto:${email}`;
+      emailLink.closest('.d-flex').style.display = 'flex';
+    } else {
+      emailLink.closest('.d-flex').style.display = 'none';
+    }
+
+    const phoneLink = document.getElementById('employeePhone');
+    if (phone) {
+      phoneLink.textContent = phone;
+      phoneLink.href = `tel:${phone}`;
+      phoneLink.closest('.d-flex').style.display = 'flex';
+    } else {
+      phoneLink.closest('.d-flex').style.display = 'none';
+    }
+
+    // Report Info
+    const assignedReportInfo = document.getElementById('assignedReportInfo');
+    if (employee.reportId) {
+      assignedReportInfo.innerHTML = `
       <div class="d-flex align-items-center mb-2">
         <i class="fas fa-clipboard-check text-primary me-2"></i>
         <span class="fw-medium">Current Report:</span>
@@ -659,141 +659,141 @@ async function showEmployeeDetails(employee) {
         <span class="badge bg-warning bg-opacity-20 text-warning ms-auto">In Progress</span>
       </div>
     `;
-  } else {
-    assignedReportInfo.innerHTML = `
+    } else {
+      assignedReportInfo.innerHTML = `
       <div class="text-center py-3">
         <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
         <p class="mb-0 text-muted">No active reports assigned</p>
       </div>
     `;
-  }
-
-  // Helper function to safely set text content with null check
-  function setTextContent(selector, text) {
-    const element = document.querySelector(selector);
-    if (element) {
-      element.textContent = text;
-      return true;
     }
-    console.warn(`Element '${selector}' not found`);
-    return false;
-  }
-  
-  // Helper function to safely update metric cards
-  function updateMetricCard(metricId, value) {
-    const card = document.querySelector(`#employeeDetailsModal #${metricId}`);
-    if (card) {
-      card.textContent = value;
-      return true;
-    }
-    console.warn(`Metric card '${metricId}' not found`);
-    return false;
-  }
 
-  // Helper to safely set innerHTML of an element by id
-  function safeSetInnerHTML(elementId, html) {
-    const el = document.getElementById(elementId);
-    if (el) {
-      el.innerHTML = html;
-      return true;
-    }
-    console.warn(`Element with id '${elementId}' not found`);
-    return false;
-  }
-
-  // Fetch and update the assigned report, performance, and activity
-  if (employee.employeeId) {
-    try {
-      // Show loading state
-      const loadingElement = document.createElement('div');
-      loadingElement.className = 'text-center py-4';
-      loadingElement.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
-      
-      // Set loading state for assigned report info
-      const assignedReportInfo = document.getElementById('assignedReportInfo');
-      if (assignedReportInfo) {
-        assignedReportInfo.innerHTML = '';
-        assignedReportInfo.appendChild(loadingElement.cloneNode(true));
+    // Helper function to safely set text content with null check
+    function setTextContent(selector, text) {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.textContent = text;
+        return true;
       }
-      
-      // Set loading state for performance metrics
-      const modalEl = document.getElementById('employeeDetailsModal');
-      const metrics = ['totalReports', 'completedReports', 'inProgressReports', 'rating'];
-      metrics.forEach(id => {
-        const element = modalEl ? modalEl.querySelector(`#${id}`) : null;
-        if (element) {
-          element.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>';
+      console.warn(`Element '${selector}' not found`);
+      return false;
+    }
+
+    // Helper function to safely update metric cards
+    function updateMetricCard(metricId, value) {
+      const card = document.querySelector(`#employeeDetailsModal #${metricId}`);
+      if (card) {
+        card.textContent = value;
+        return true;
+      }
+      console.warn(`Metric card '${metricId}' not found`);
+      return false;
+    }
+
+    // Helper to safely set innerHTML of an element by id
+    function safeSetInnerHTML(elementId, html) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.innerHTML = html;
+        return true;
+      }
+      console.warn(`Element with id '${elementId}' not found`);
+      return false;
+    }
+
+    // Fetch and update the assigned report, performance, and activity
+    if (employee.employeeId) {
+      try {
+        // Show loading state
+        const loadingElement = document.createElement('div');
+        loadingElement.className = 'text-center py-4';
+        loadingElement.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+
+        // Set loading state for assigned report info
+        const assignedReportInfo = document.getElementById('assignedReportInfo');
+        if (assignedReportInfo) {
+          assignedReportInfo.innerHTML = '';
+          assignedReportInfo.appendChild(loadingElement.cloneNode(true));
         }
-      });
-      
-      // Set loading state for activity timeline
-      const activityTimeline = document.querySelector('.activity-timeline');
-      if (activityTimeline) {
-        // Find the first activity item container or use the timeline itself
-        const activityItems = activityTimeline.querySelector('.d-flex') ? 
-          activityTimeline.querySelectorAll('.d-flex') : 
-          [];
-        
-        // Clear existing activities
-        activityTimeline.querySelectorAll('.d-flex').forEach(el => el.remove());
-        
-        // Add loading indicator
-        const loadingItem = document.createElement('div');
-        loadingItem.className = 'd-flex justify-content-center py-3';
-        loadingItem.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
-        activityTimeline.appendChild(loadingItem);
-      }
-      
-      // Fetch all data in parallel
-      const empBackendId = employee._id || employee.id || employee.employeeId;
-      const [assignedReport, performanceData, activityData] = await Promise.all([
-        fetchAssignedReport(empBackendId),
-        fetchEmployeePerformance(empBackendId),
-        fetchEmployeeActivity(empBackendId)
-      ]);
-      
-      // Update assigned report section
-      const assignedReportEl = document.getElementById('assignedReportInfo');
-      if (assignedReportEl) {
-        if (assignedReport) {
-          updateAssignedReport(assignedReport);
-        } else {
-          safeSetInnerHTML(
-            'assignedReportInfo',
-            `<div class="text-center py-3">
+
+        // Set loading state for performance metrics
+        const modalEl = document.getElementById('employeeDetailsModal');
+        const metrics = ['totalReports', 'completedReports', 'inProgressReports', 'rating'];
+        metrics.forEach(id => {
+          const element = modalEl ? modalEl.querySelector(`#${id}`) : null;
+          if (element) {
+            element.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>';
+          }
+        });
+
+        // Set loading state for activity timeline
+        const activityTimeline = document.querySelector('.activity-timeline');
+        if (activityTimeline) {
+          // Find the first activity item container or use the timeline itself
+          const activityItems = activityTimeline.querySelector('.d-flex') ?
+            activityTimeline.querySelectorAll('.d-flex') :
+            [];
+
+          // Clear existing activities
+          activityTimeline.querySelectorAll('.d-flex').forEach(el => el.remove());
+
+          // Add loading indicator
+          const loadingItem = document.createElement('div');
+          loadingItem.className = 'd-flex justify-content-center py-3';
+          loadingItem.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+          activityTimeline.appendChild(loadingItem);
+        }
+
+        // Fetch all data in parallel
+        const empBackendId = employee._id || employee.id || employee.employeeId;
+        const [assignedReport, performanceData, activityData] = await Promise.all([
+          fetchAssignedReport(empBackendId),
+          fetchEmployeePerformance(empBackendId),
+          fetchEmployeeActivity(empBackendId)
+        ]);
+
+        // Update assigned report section
+        const assignedReportEl = document.getElementById('assignedReportInfo');
+        if (assignedReportEl) {
+          if (assignedReport) {
+            updateAssignedReport(assignedReport);
+          } else {
+            safeSetInnerHTML(
+              'assignedReportInfo',
+              `<div class="text-center py-3">
               <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
               <p class="mb-0 text-muted">No active reports assigned</p>
             </div>`
-          );
+            );
+          }
         }
-      }
 
-      // Update performance metrics
-      if (performanceData) {
-        updateMetricCard('totalReports', performanceData.totalReports || '0');
-        updateMetricCard('completedReports', performanceData.completedReports || '0');
-        updateMetricCard('inProgressReports', performanceData.inProgressReports || '0');
-        updateMetricCard(
-          'rating',
-          performanceData.averageRating ? performanceData.averageRating.toFixed(1) : '0.0'
-        );
-      } else {
-        metrics.forEach((id) => updateMetricCard(id, '-'));
-      }
+        // Update performance metrics
+        if (performanceData) {
+          updateMetricCard('totalReports', performanceData.totalReports || '0');
+          updateMetricCard('completedReports', performanceData.completedReports || '0');
+          updateMetricCard('inProgressReports', performanceData.inProgressReports || '0');
+          updateMetricCard(
+            'rating',
+            performanceData.averageRating ? performanceData.averageRating.toFixed(1) : '0.0'
+          );
+        } else {
+          metrics.forEach((id) => updateMetricCard(id, '-'));
+        }
 
-      // Update activity timeline
-      const timelineEl = document.querySelector('#employeeDetailsModal .activity-timeline');
-      if (timelineEl) {
-        // Clear existing content
-        timelineEl.innerHTML =
-          '<h6 class="text-uppercase small fw-bold text-muted mb-3">Recent Activity</h6>';
+        // Update activity timeline
+        const timelineEl = document.querySelector('#employeeDetailsModal .activity-timeline');
+        if (timelineEl) {
+          // Clear existing content
+          timelineEl.innerHTML =
+            '<h6 class="text-uppercase small fw-bold text-muted mb-3">Recent Activity</h6>';
 
-        if (activityData && activityData.length > 0) {
-          activityData.forEach((activity) => {
-            const item = document.createElement('div');
-            item.className = 'd-flex mb-3';
+          if (activityData && activityData.length > 0) {
+            activityData.forEach((activity) => {
+              const item = document.createElement('div');
+              item.className = 'd-flex mb-3';
 
-            item.innerHTML = `
+              item.innerHTML = `
               <div class="flex-shrink-0">
                 <div class="bg-${activity.type === 'completed' ? 'success' : 'primary'}-subtle rounded-circle p-2 text-${activity.type === 'completed' ? 'success' : 'primary'}">
                   <i class="fas fa-${activity.type === 'completed' ? 'check-circle' : 'tasks'}"></i>
@@ -804,149 +804,149 @@ async function showEmployeeDetails(employee) {
                 <p class="small text-muted mb-0">${formatDate(activity.timestamp || new Date(), true)}</p>
               </div>`;
 
-            timelineEl.appendChild(item);
-          });
-        } else {
-          timelineEl.innerHTML += `
+              timelineEl.appendChild(item);
+            });
+          } else {
+            timelineEl.innerHTML += `
             <div class="text-center py-3">
               <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
               <p class="mb-0 text-muted">No recent activity</p>
             </div>`;
+          }
         }
+      } catch (error) {
+        console.error('Error in showEmployeeDetails:', error);
+        showToast('error', 'An error occurred while loading employee details.');
       }
-    } catch (error) {
-      console.error('Error in showEmployeeDetails:', error);
-      showToast('error', 'An error occurred while loading employee details.');
     }
-  }
 
-  // Fetch assigned report data
-  async function fetchAssignedReport(employeeBackendId) {
-    try {
-      console.log('Fetching assigned report for employee:', employeeBackendId);
-      // Request only one current in-progress report for this employee
-      const statusParam = encodeURIComponent('in progress');
-      const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&status=${statusParam}&limit=1`, {
-        headers: {
-          ...authHeaders()
+    // Fetch assigned report data
+    async function fetchAssignedReport(employeeBackendId) {
+      try {
+        console.log('Fetching assigned report for employee:', employeeBackendId);
+        // Request only one current in-progress report for this employee
+        const statusParam = encodeURIComponent('in progress');
+        const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&status=${statusParam}&limit=1`, {
+          headers: {
+            ...authHeaders()
+          }
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Error response:', error);
+          throw new Error('Failed to fetch assigned report');
         }
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('Error response:', error);
-        throw new Error('Failed to fetch assigned report');
+
+        const result = await response.json();
+        console.log('Assigned reports response:', result);
+        // The reports are in result.data array
+        return result.data && result.data.length > 0 ? result.data[0] : null;
+      } catch (error) {
+        console.error('Error fetching assigned report:', error);
+        return null;
       }
-      
-      const result = await response.json();
-      console.log('Assigned reports response:', result);
-      // The reports are in result.data array
-      return result.data && result.data.length > 0 ? result.data[0] : null;
-    } catch (error) {
-      console.error('Error fetching assigned report:', error);
-      return null;
     }
-  }
 
-  // Helper to determine if a report belongs to the given employee
-  function isReportForEmployee(report, empId) {
-    if (!report || !report.assignedTo) return false;
-    const assigned = report.assignedTo;
-    return String(assigned._id || '') === String(empId) || String(assigned.employeeId || '') === String(empId);
-  }
+    // Helper to determine if a report belongs to the given employee
+    function isReportForEmployee(report, empId) {
+      if (!report || !report.assignedTo) return false;
+      const assigned = report.assignedTo;
+      return String(assigned._id || '') === String(empId) || String(assigned.employeeId || '') === String(empId);
+    }
 
-  // Fetch employee performance data (client-side calculation)
-  async function fetchEmployeePerformance(employeeBackendId) {
-    try {
-      // Ask backend for reports assigned to this employee (should be filtered already). If backend filter isn't supported it will at least reduce payload.
-      const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&limit=1000`, {
-        headers: {
-          ...authHeaders()
+    // Fetch employee performance data (client-side calculation)
+    async function fetchEmployeePerformance(employeeBackendId) {
+      try {
+        // Ask backend for reports assigned to this employee (should be filtered already). If backend filter isn't supported it will at least reduce payload.
+        const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&limit=1000`, {
+          headers: {
+            ...authHeaders()
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch performance data');
         }
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch performance data');
+        const result = await response.json();
+        const reports = Array.isArray(result.data) ? result.data.filter(r => isReportForEmployee(r, employeeBackendId)) : [];
+
+        const totalReports = reports.length;
+        const statusCounts = reports.reduce((acc, r) => {
+          const status = (r.status || '').toLowerCase();
+          if (status.includes('progress')) acc.inProgress++;
+          else if (status === 'resolved' || status === 'completed') acc.completed++;
+          return acc;
+        }, { inProgress: 0, completed: 0 });
+
+        return {
+          totalReports,
+          completedReports: statusCounts.completed,
+          inProgressReports: statusCounts.inProgress,
+          averageRating: 0 // placeholder until backend provides rating
+        };
+      } catch (error) {
+        console.error('Error fetching employee performance:', error);
+        return {
+          totalReports: 0,
+          completedReports: 0,
+          inProgressReports: 0,
+          averageRating: 0
+        };
       }
-
-      const result = await response.json();
-      const reports = Array.isArray(result.data) ? result.data.filter(r => isReportForEmployee(r, employeeBackendId)) : [];
-
-      const totalReports = reports.length;
-      const statusCounts = reports.reduce((acc, r) => {
-        const status = (r.status || '').toLowerCase();
-        if (status.includes('progress')) acc.inProgress++;
-        else if (status === 'resolved' || status === 'completed') acc.completed++;
-        return acc;
-      }, { inProgress: 0, completed: 0 });
-
-      return {
-        totalReports,
-        completedReports: statusCounts.completed,
-        inProgressReports: statusCounts.inProgress,
-        averageRating: 0 // placeholder until backend provides rating
-      };
-    } catch (error) {
-      console.error('Error fetching employee performance:', error);
-      return {
-        totalReports: 0,
-        completedReports: 0,
-        inProgressReports: 0,
-        averageRating: 0
-      };
     }
-  }
 
-  // Fetch employee's recent activity
-  async function fetchEmployeeActivity(employeeBackendId) {
-    try {
-      const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&limit=10`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+    // Fetch employee's recent activity
+    async function fetchEmployeeActivity(employeeBackendId) {
+      try {
+        const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&limit=10`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch activity data');
         }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch activity data');
-      }
-      
-      const result = await response.json();
-      
-      // Transform report data into activity items
-      if (result.success && Array.isArray(result.data)) {
-        return result.data.map(report => ({
-          type: 'report_assigned',
-          description: `Assigned report #${report.reportId || report._id.toString().substring(18, 24)}`,
-          timestamp: report.assignedAt || report.createdAt,
-          reportId: report._id
-        }));
-      }
-      
-      return [];
-    } catch (error) {
-      console.error('Error fetching employee activity:', error);
-      return [];
-    }
-  }
 
-  // Update assigned report info
-  function updateAssignedReport(report) {
-    console.log('Updating assigned report with data:', report);
-    const assignedReportInfo = document.getElementById('assignedReportInfo');
-    
-    if (!report) {
-      console.log('No report provided to updateAssignedReport');
-      assignedReportInfo.innerHTML = `
+        const result = await response.json();
+
+        // Transform report data into activity items
+        if (result.success && Array.isArray(result.data)) {
+          return result.data.map(report => ({
+            type: 'report_assigned',
+            description: `Assigned report #${report.reportId || report._id.toString().substring(18, 24)}`,
+            timestamp: report.assignedAt || report.createdAt,
+            reportId: report._id
+          }));
+        }
+
+        return [];
+      } catch (error) {
+        console.error('Error fetching employee activity:', error);
+        return [];
+      }
+    }
+
+    // Update assigned report info
+    function updateAssignedReport(report) {
+      console.log('Updating assigned report with data:', report);
+      const assignedReportInfo = document.getElementById('assignedReportInfo');
+
+      if (!report) {
+        console.log('No report provided to updateAssignedReport');
+        assignedReportInfo.innerHTML = `
         <div class="text-center py-3">
           <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
           <p class="mb-0 text-muted">No active reports assigned</p>
         </div>
       `;
-      return;
-    }
-    
-    assignedReportInfo.innerHTML = `
+        return;
+      }
+
+      assignedReportInfo.innerHTML = `
       <div class="d-flex align-items-center mb-2">
         <i class="fas fa-clipboard-check text-primary me-2"></i>
         <span class="fw-medium">Current Report:</span>
@@ -963,100 +963,100 @@ async function showEmployeeDetails(employee) {
         <span class="badge bg-warning bg-opacity-20 text-warning ms-auto">${report.status || 'In Progress'}</span>
       </div>
     `;
-    
-    // Add event listener for view report button
-    const viewReportBtn = assignedReportInfo.querySelector('.view-report');
-    if (viewReportBtn) {
-      viewReportBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const reportId = e.currentTarget.getAttribute('data-id');
-        // Trigger view report modal
-        viewReportDetails(reportId);
-      });
-    }
-  }
 
-/* Duplicated block (fetchEmployeeActivity) - commented out to fix syntax errors
-      const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&limit=5`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+      // Add event listener for view report button
+      const viewReportBtn = assignedReportInfo.querySelector('.view-report');
+      if (viewReportBtn) {
+        viewReportBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const reportId = e.currentTarget.getAttribute('data-id');
+          // Trigger view report modal
+          viewReportDetails(reportId);
+        });
+      }
+    }
+
+    /* Duplicated block (fetchEmployeeActivity) - commented out to fix syntax errors
+          const response = await fetch(`/api/complaints?assignedTo=${employeeBackendId}&limit=5`, {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch activity data');
+          }
+          
+          const result = await response.json();
+          
+          // Transform report data into activity items
+          if (result.success && Array.isArray(result.data)) {
+            return result.data.map(report => ({
+              type: 'report_assigned',
+              description: `Assigned report #${report.reportId || report._id.toString().substring(18, 24)}`,
+              timestamp: report.assignedAt || report.createdAt,
+              reportId: report._id
+            }));
+          }
+          
+          return [];
+        } catch (error) {
+          console.error('Error fetching employee activity:', error);
+          return [];
         }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch activity data');
-      }
-      
-      const result = await response.json();
-      
-      // Transform report data into activity items
-      if (result.success && Array.isArray(result.data)) {
-        return result.data.map(report => ({
-          type: 'report_assigned',
-          description: `Assigned report #${report.reportId || report._id.toString().substring(18, 24)}`,
-          timestamp: report.assignedAt || report.createdAt,
-          reportId: report._id
-        }));
-      }
-      
-      return [];
-    } catch (error) {
-      console.error('Error fetching employee activity:', error);
-      return [];
+    */
+
+    // Update performance metrics
+    function updatePerformanceMetrics(stats) {
+      if (!stats) return;
+
+      const modalEl = document.getElementById('employeeDetailsModal');
+      if (!modalEl) return;
+      modalEl.querySelector('#totalReports').textContent = stats.totalReports || '0';
+      modalEl.querySelector('#completedReports').textContent = stats.completedReports || '0';
+      modalEl.querySelector('#inProgressReports').textContent = stats.inProgressReports || '0';
+      modalEl.querySelector('#rating').textContent = stats.averageRating ? stats.averageRating.toFixed(1) : 'N/A';
     }
-*/
 
-  // Update performance metrics
-  function updatePerformanceMetrics(stats) {
-    if (!stats) return;
-    
-    const modalEl = document.getElementById('employeeDetailsModal');
-    if (!modalEl) return;
-    modalEl.querySelector('#totalReports').textContent = stats.totalReports || '0';
-    modalEl.querySelector('#completedReports').textContent = stats.completedReports || '0';
-    modalEl.querySelector('#inProgressReports').textContent = stats.inProgressReports || '0';
-    modalEl.querySelector('#rating').textContent = stats.averageRating ? stats.averageRating.toFixed(1) : 'N/A';
-  }
+    // Update activity timeline
+    function updateActivityTimeline(activities) {
+      const timeline = document.querySelector('#employeeDetailsModal .activity-timeline');
+      if (!timeline) return;
 
-  // Update activity timeline
-  function updateActivityTimeline(activities) {
-    const timeline = document.querySelector('#employeeDetailsModal .activity-timeline');
-    if (!timeline) return;
-    
-    if (!activities || activities.length === 0) {
-      timeline.innerHTML = `
+      if (!activities || activities.length === 0) {
+        timeline.innerHTML = `
         <div class="text-center py-3">
           <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
           <p class="mb-0 text-muted">No recent activity</p>
         </div>
       `;
-      return;
-    }
-    
-    // Define activity type icons and colors
-    const activityIcons = {
-      'report_assigned': 'clipboard-check',
-      'report_completed': 'check-circle',
-      'report_updated': 'edit',
-      'comment_added': 'comment',
-      'status_changed': 'sync'
-    };
-    
-    const activityColors = {
-      'report_assigned': 'primary',
-      'report_completed': 'success', 
-      'report_updated': 'info',
-      'comment_added': 'warning',
-      'status_changed': 'secondary'
-    };
-    
-    const activityHtml = activities.map(activity => {
-      const icon = activityIcons[activity.type] || 'circle';
-      const color = activityColors[activity.type] || 'secondary';
-      const date = formatDate(activity.timestamp || new Date(), true);
-      
-      return `
+        return;
+      }
+
+      // Define activity type icons and colors
+      const activityIcons = {
+        'report_assigned': 'clipboard-check',
+        'report_completed': 'check-circle',
+        'report_updated': 'edit',
+        'comment_added': 'comment',
+        'status_changed': 'sync'
+      };
+
+      const activityColors = {
+        'report_assigned': 'primary',
+        'report_completed': 'success',
+        'report_updated': 'info',
+        'comment_added': 'warning',
+        'status_changed': 'secondary'
+      };
+
+      const activityHtml = activities.map(activity => {
+        const icon = activityIcons[activity.type] || 'circle';
+        const color = activityColors[activity.type] || 'secondary';
+        const date = formatDate(activity.timestamp || new Date(), true);
+
+        return `
         <div class="timeline-item">
           <div class="timeline-icon bg-soft-${color} text-${color}">
             <i class="fas fa-${icon}"></i>
@@ -1067,65 +1067,65 @@ async function showEmployeeDetails(employee) {
           </div>
         </div>
       `;
-    }).join('');
-    
-    timeline.innerHTML = activityHtml;
+      }).join('');
+
+      timeline.innerHTML = activityHtml;
+    }
+
+    // Helper function to get activity icon
+    function getActivityIcon(type) {
+      const icons = {
+        'report_created': 'fa-file-alt',
+        'report_updated': 'fa-edit',
+        'report_completed': 'fa-check-circle',
+        'note_added': 'fa-comment-alt',
+        'status_changed': 'fa-exchange-alt',
+        'assigned': 'fa-user-check',
+        'report_assigned': 'fa-clipboard-check'
+      };
+      return icons[type] || 'fa-info-circle';
+    }
+
+    // Helper function to get activity icon class
+    function getActivityIconClass(type) {
+      const classes = {
+        'report_created': 'text-primary',
+        'report_updated': 'text-warning',
+        'report_completed': 'text-success',
+        'note_added': 'text-info',
+        'status_changed': 'text-purple',
+        'assigned': 'text-primary',
+        'report_assigned': 'text-primary'
+      };
+      return classes[type] || 'text-secondary';
+    }
+
+    // This Promise.all was a duplicate and has been moved to the top of the function
+
+    // Setup action buttons
+    const callBtn = document.querySelector('[data-action="call"]');
+    const emailBtn = document.querySelector('[data-action="email"]');
+
+    if (callBtn && phone) {
+      callBtn.onclick = () => window.open(`tel:${phone}`, '_blank');
+      callBtn.disabled = false;
+    } else if (callBtn) {
+      callBtn.disabled = true;
+    }
+
+    if (emailBtn && email) {
+      emailBtn.onclick = () => window.open(`mailto:${email}`, '_blank');
+      emailBtn.disabled = false;
+    } else if (emailBtn) {
+      emailBtn.disabled = true;
+    }
+
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('employeeDetailsModal'));
+    modal.show();
   }
 
-  // Helper function to get activity icon
-  function getActivityIcon(type) {
-    const icons = {
-      'report_created': 'fa-file-alt',
-      'report_updated': 'fa-edit',
-      'report_completed': 'fa-check-circle',
-      'note_added': 'fa-comment-alt',
-      'status_changed': 'fa-exchange-alt',
-      'assigned': 'fa-user-check',
-      'report_assigned': 'fa-clipboard-check'
-    };
-    return icons[type] || 'fa-info-circle';
-  }
-
-  // Helper function to get activity icon class
-  function getActivityIconClass(type) {
-    const classes = {
-      'report_created': 'text-primary',
-      'report_updated': 'text-warning',
-      'report_completed': 'text-success',
-      'note_added': 'text-info',
-      'status_changed': 'text-purple',
-      'assigned': 'text-primary',
-      'report_assigned': 'text-primary'
-    };
-    return classes[type] || 'text-secondary';
-  }
-
-  // This Promise.all was a duplicate and has been moved to the top of the function
-
-  // Setup action buttons
-  const callBtn = document.querySelector('[data-action="call"]');
-  const emailBtn = document.querySelector('[data-action="email"]');
-  
-  if (callBtn && phone) {
-    callBtn.onclick = () => window.open(`tel:${phone}`, '_blank');
-    callBtn.disabled = false;
-  } else if (callBtn) {
-    callBtn.disabled = true;
-  }
-  
-  if (emailBtn && email) {
-    emailBtn.onclick = () => window.open(`mailto:${email}`, '_blank');
-    emailBtn.disabled = false;
-  } else if (emailBtn) {
-    emailBtn.disabled = true;
-  }
-
-  // Show the modal
-  const modal = new bootstrap.Modal(document.getElementById('employeeDetailsModal'));
-  modal.show();
-}
-
-function reportCardHTML(r) {
+  function reportCardHTML(r) {
     if (!r) {
       console.error('Invalid report data received:', r);
       return '<div class="col-12"><div class="alert alert-warning">Invalid report data</div></div>';
@@ -1139,10 +1139,10 @@ function reportCardHTML(r) {
     const title = r.title || 'Untitled Report';
     const description = r.description ? r.description.slice(0, 120) : 'No description';
     const isCompleted = status === 'resolved' || status === 'closed';
-    
+
     // Find completion image if exists
     const completionImage = r.images?.find(img => img.isCompletionImage);
-    
+
     // Employee assignment section
     let assignSection = '';
     if (r.assignedTo && typeof r.assignedTo === 'object') {
@@ -1176,22 +1176,22 @@ function reportCardHTML(r) {
           </button>
         </div>`;
     }
-    
+
     // Completed status section
     let completedSection = '';
     if (isCompleted) {
       const completedDate = r.resolvedAt ? new Date(r.resolvedAt) : new Date(r.updatedAt);
-      const formattedDate = completedDate.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'short', 
+      const formattedDate = completedDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       });
-      
+
       // Find the completion comment if it exists
       const completionComment = r.comments?.find(c => c.status === 'resolved');
-      
+
       completedSection = `
         <div class="completion-status mt-3">
           <div class="d-flex align-items-start">
@@ -1216,11 +1216,11 @@ function reportCardHTML(r) {
               ${completionImage ? `
                 <div class="mt-2">
                   <div class="position-relative rounded overflow-hidden" style="height: 120px; background-color: #f8f9fa;">
-                    <img src="${completionImage.url}" 
+                    <img src="${resolveAdminImageUrl(completionImage.url)}"
                          class="img-fluid h-100 w-100 object-fit-cover cursor-pointer view-completion-image" 
                          data-bs-toggle="modal" 
                          data-bs-target="#completionImageModal"
-                         data-image="${completionImage.url}"
+                         data-image="${resolveAdminImageUrl(completionImage.url)}"
                          alt="Completion Image"
                          style="cursor: pointer; transition: transform 0.3s ease;">
                     <div class="position-absolute top-0 end-0 m-2">
@@ -1290,18 +1290,18 @@ function reportCardHTML(r) {
       if (!res.ok) throw new Error('Failed to fetch report details');
       const r = await res.json();
       currentReportId = id;
-      
+
       // Get the modal content container
       const container = document.getElementById('reportDetailsContent');
       container.innerHTML = detailsHTML(r);
-      
+
       // Show the modal
       reportDetailsModal.show();
     } catch (err) {
       console.error('Error loading report details:', err);
       showError('Failed to load report details. Please try again.');
-    } finally { 
-      showLoading(false); 
+    } finally {
+      showLoading(false);
     }
   }
 
@@ -1309,21 +1309,22 @@ function reportCardHTML(r) {
     // Format dates
     const createdAt = formatDate(r.createdAt, true);
     const updatedAt = formatDate(r.updatedAt || r.createdAt, true);
-    
+
     // Generate photos HTML if available
     const photosHTML = r.images && r.images.length > 0 ? `
       <div class="row g-2 mt-2">
         ${r.images.slice(0, 4).map((img, index) => `
           <div class="col-6 col-sm-3">
-            <a href="${img.url || img}" target="_blank" class="d-block">
-              <img src="${img.url || img}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" 
-                   alt="Report image ${index + 1}">
-            </a>
+
+            <a href="${resolveAdminImageUrl(img.url || img)}" target="_blank" class="d-block">
+  <img src="${resolveAdminImageUrl(img.url || img)}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" 
+       alt="Report image ${index + 1}">
+</a>
           </div>
         `).join('')}
-      </div>` : 
+      </div>` :
       '<div class="alert alert-light">No images attached</div>';
-    
+
     // Generate location info if available
     const locationInfo = r.location?.coordinates ? `
       <div class="mt-2">
@@ -1331,7 +1332,7 @@ function reportCardHTML(r) {
           <i class="fas fa-map-marker-alt me-1"></i>
           ${r.location.address || 'Location not specified'}
         </p>
-      </div>` : 
+      </div>` :
       '<p class="text-muted"><i class="fas fa-map-marker-alt me-1"></i> No location data available</p>';
 
     return `
@@ -1444,7 +1445,7 @@ function reportCardHTML(r) {
       </div>
     </div>`;
   }
-  
+
   function generateStatusTimeline(report) {
     // Define possible statuses in order
     const statuses = [
@@ -1453,23 +1454,23 @@ function reportCardHTML(r) {
       { status: 'resolved', label: 'Resolved', date: report.resolvedAt, icon: 'fa-check-circle' },
       { status: 'closed', label: 'Closed', date: report.closedAt, icon: 'fa-lock' }
     ];
-    
+
     // Normalize current status
     let currentStatus = (report.status || '').toLowerCase();
     if (currentStatus === 'open') currentStatus = 'reported';
-    
+
     // Find the current status index
     const currentStatusIndex = statuses.findIndex(s => s.status === currentStatus);
-    
+
     return statuses.map((item, index) => {
       const isCompleted = currentStatusIndex >= index;
       const isCurrent = item.status === currentStatus;
       const isLast = index === statuses.length - 1;
-      
+
       // Get appropriate icon and color based on status
       let iconClass = 'fa-circle';
       let iconColor = 'text-muted';
-      
+
       if (isCompleted) {
         iconClass = 'fa-check-circle';
         iconColor = 'text-success';
@@ -1478,7 +1479,7 @@ function reportCardHTML(r) {
         iconClass = item.icon || 'fa-circle';
         iconColor = 'text-primary';
       }
-      
+
       return `
         <div class="timeline-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}">
           <div class="timeline-marker ${iconColor}">
@@ -1489,8 +1490,8 @@ function reportCardHTML(r) {
               <h6 class="mb-1">${item.label}</h6>
               ${item.date ? `<small class="text-muted">${formatDate(item.date, true)}</small>` : ''}
             </div>
-            ${item.status === currentStatus && report.assignedTo ? 
-              `<p class="small mb-0">Assigned to: <strong>${report.assignedTo}</strong></p>` : ''}
+            ${item.status === currentStatus && report.assignedTo ?
+          `<p class="small mb-0">Assigned to: <strong>${report.assignedTo}</strong></p>` : ''}
             ${!isLast ? '<div class="timeline-connector"></div>' : ''}
           </div>
         </div>`;
@@ -1511,15 +1512,15 @@ function reportCardHTML(r) {
       document.getElementById('edit-report-id').value = id;
       document.getElementById('edit-status').value = r.status;
       document.getElementById('edit-priority').value = r.priority || 'medium';
-      document.getElementById('edit-due-date').value = r.dueDate ? r.dueDate.substr(0,10) : '';
+      document.getElementById('edit-due-date').value = r.dueDate ? r.dueDate.substr(0, 10) : '';
       document.getElementById('edit-comment').value = '';
       editReportModal.show();
-    } catch(e){
+    } catch (e) {
       showError('Failed loading for edit');
     } finally { showLoading(false); }
   }
 
-  async function handleEditSubmit(e){
+  async function handleEditSubmit(e) {
     e.preventDefault();
     const formData = new FormData(editForm);
     const id = formData.get('edit-report-id');
@@ -1535,18 +1536,18 @@ function reportCardHTML(r) {
     try {
       showLoading(true);
       const res = await fetch(`/api/complaints/${id}`, {
-        method:'PATCH',
-        headers:{ 'Content-Type':'application/json', ...authHeaders() },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(body)
       });
       if (!res.ok) throw new Error();
-      showToast('success','Report updated');
+      showToast('success', 'Report updated');
       editReportModal.hide();
       await loadReports();
-    } catch(err){
+    } catch (err) {
       console.error(err);
       showError('Update failed');
-    } finally{ showLoading(false);}  
+    } finally { showLoading(false); }
   }
 
   /* ------------------------------------------------------------------
@@ -1560,18 +1561,18 @@ function reportCardHTML(r) {
 
   async function handleCompleteReport(e) {
     e.preventDefault();
-    
+
     const reportId = document.getElementById('reportIdToComplete').value;
     const comment = document.getElementById('completionComment').value;
     const imageInput = document.getElementById('completionImage');
     const submitBtn = e.target.querySelector('button[type="submit"]');
-    
+
     // Validate file input
     if (!imageInput.files || imageInput.files.length === 0) {
       showToast('error', 'Please select an image of the completed work');
       return;
     }
-    
+
     // Validate file type
     const file = imageInput.files[0];
     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -1579,7 +1580,7 @@ function reportCardHTML(r) {
       showToast('error', 'Please upload a valid image file (JPEG, PNG, GIF)');
       return;
     }
-    
+
     // Validate file size (max 5MB)
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
@@ -1597,13 +1598,13 @@ function reportCardHTML(r) {
     const originalBtnText = submitBtn.innerHTML;
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Processing...';
-    
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found. Please log in again.');
       }
-      
+
       const response = await fetch(`${API_BASE}/complaints/${reportId}/complete`, {
         method: 'POST',
         headers: {
@@ -1615,7 +1616,7 @@ function reportCardHTML(r) {
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to mark report as completed');
       }
@@ -1623,27 +1624,27 @@ function reportCardHTML(r) {
       // Close the modal
       const modal = bootstrap.Modal.getInstance(document.getElementById('completeReportModal'));
       modal.hide();
-      
+
       // Show success message
       showToast('success', 'Report marked as completed successfully!');
-      
+
       // Reload the reports to reflect the changes
       await loadReports();
-      
+
       // Reset the form
       e.target.reset();
-      
+
     } catch (error) {
       console.error('Error completing report:', error);
       showToast('error', error.message || 'Failed to mark report as completed');
-      
+
       // Re-enable the form for retry
       submitBtn.disabled = false;
       submitBtn.innerHTML = originalBtnText;
       return;
     } finally {
       showLoading(false);
-      
+
       // Reset button state if not already done
       if (!submitBtn.disabled) {
         submitBtn.disabled = false;
@@ -1659,40 +1660,40 @@ function reportCardHTML(r) {
     if (confirm('Delete this report?')) deleteReport(id);
   }
 
-  async function deleteReport(id){
-    try{
+  async function deleteReport(id) {
+    try {
       showLoading(true);
-      const res = await fetch(`/api/complaints/${id}`,{method:'DELETE', headers:authHeaders()});
-      if(!res.ok) throw new Error();
-      showToast('success','Report deleted');
+      const res = await fetch(`/api/complaints/${id}`, { method: 'DELETE', headers: authHeaders() });
+      if (!res.ok) throw new Error();
+      showToast('success', 'Report deleted');
       reportDetailsModal.hide();
       await loadReports();
-    }catch(err){
+    } catch (err) {
       showError('Deletion failed');
-    }finally{ showLoading(false); }
+    } finally { showLoading(false); }
   }
 
   /* ------------------------------------------------------------------
    *  Pagination UI
    * ----------------------------------------------------------------*/
-  function updatePagination(){
-    if(!paginationEl) return;
-    const totalPages = Math.ceil(totalItems/itemsPerPage) || 1;
-    if(totalPages<=1){ paginationEl.innerHTML=''; return; }
+  function updatePagination() {
+    if (!paginationEl) return;
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+    if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
 
-    let html = `<li class="page-item ${currentPage===1?'disabled':''}">
-      <a class="page-link" href="#" data-page="${currentPage-1}" aria-label="Prev">&laquo;</a></li>`;
+    let html = `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+      <a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Prev">&laquo;</a></li>`;
 
-    for(let p=1;p<=totalPages;p++){
-      if (p===1 || p===totalPages || Math.abs(p-currentPage)<=1){
-        html += `<li class="page-item ${p===currentPage?'active':''}"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
-      } else if(Math.abs(p-currentPage)===2){
+    for (let p = 1; p <= totalPages; p++) {
+      if (p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1) {
+        html += `<li class="page-item ${p === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${p}">${p}</a></li>`;
+      } else if (Math.abs(p - currentPage) === 2) {
         html += `<li class="page-item disabled"><span class="page-link">…</span></li>`;
       }
     }
 
-    html += `<li class="page-item ${currentPage===totalPages?'disabled':''}">
-      <a class="page-link" href="#" data-page="${currentPage+1}" aria-label="Next">&raquo;</a></li>`;
+    html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+      <a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">&raquo;</a></li>`;
 
     paginationEl.innerHTML = html;
   }
@@ -1700,45 +1701,45 @@ function reportCardHTML(r) {
   /* ------------------------------------------------------------------
    *  Stats cards
    * ----------------------------------------------------------------*/
-  function updateStats(){
-    const totalEl    = document.getElementById('totalReports');
-    const progEl     = document.getElementById('inProgress');
-    const resEl      = document.getElementById('resolved');
-    const overdueEl  = document.getElementById('overdue');
-    if(!totalEl) return;
+  function updateStats() {
+    const totalEl = document.getElementById('totalReports');
+    const progEl = document.getElementById('inProgress');
+    const resEl = document.getElementById('resolved');
+    const overdueEl = document.getElementById('overdue');
+    if (!totalEl) return;
 
     const stats = {
       total: reports.length,
-      inProg: reports.filter(r=>r.status==='in progress').length,
-      resolved: reports.filter(r=>r.status==='resolved').length,
-      overdue: reports.filter(r=> r.dueDate && new Date(r.dueDate) < new Date() && r.status!=='resolved').length
+      inProg: reports.filter(r => r.status === 'in progress').length,
+      resolved: reports.filter(r => r.status === 'resolved').length,
+      overdue: reports.filter(r => r.dueDate && new Date(r.dueDate) < new Date() && r.status !== 'resolved').length
     };
     totalEl.textContent = stats.total;
-    progEl.textContent  = stats.inProg;
-    resEl.textContent   = stats.resolved;
+    progEl.textContent = stats.inProg;
+    resEl.textContent = stats.resolved;
     overdueEl.textContent = stats.overdue;
   }
 
   /* ------------------------------------------------------------------
    *  Utilities
    * ----------------------------------------------------------------*/
-  function formatStatus(s){ return s? s.replace(/\b\w/g,c=>c.toUpperCase()).replace('-',' '):'Unknown'; }
-  function formatDate(d,withTime=false){
-    if(!d) return 'N/A';
-    const opts = {year:'numeric', month:'short', day:'numeric'};
-    if(withTime){ opts.hour='2-digit'; opts.minute='2-digit'; opts.hour12=true; }
-    return new Date(d).toLocaleString('en-US',opts);
+  function formatStatus(s) { return s ? s.replace(/\b\w/g, c => c.toUpperCase()).replace('-', ' ') : 'Unknown'; }
+  function formatDate(d, withTime = false) {
+    if (!d) return 'N/A';
+    const opts = { year: 'numeric', month: 'short', day: 'numeric' };
+    if (withTime) { opts.hour = '2-digit'; opts.minute = '2-digit'; opts.hour12 = true; }
+    return new Date(d).toLocaleString('en-US', opts);
   }
-  function getStatusBadgeClass(s){
-    return ({'pending':'bg-warning bg-opacity-10 text-warning','in progress':'bg-info bg-opacity-10 text-info','resolved':'bg-success bg-opacity-10 text-success','rejected':'bg-danger bg-opacity-10 text-danger','closed':'bg-secondary bg-opacity-10 text-secondary'}[s]||'bg-light text-dark');
+  function getStatusBadgeClass(s) {
+    return ({ 'pending': 'bg-warning bg-opacity-10 text-warning', 'in progress': 'bg-info bg-opacity-10 text-info', 'resolved': 'bg-success bg-opacity-10 text-success', 'rejected': 'bg-danger bg-opacity-10 text-danger', 'closed': 'bg-secondary bg-opacity-10 text-secondary' }[s] || 'bg-light text-dark');
   }
-  function getPriorityBadgeClass(p){ return ({low:'success',medium:'info',high:'warning',critical:'danger'}[p]||'secondary'); }
+  function getPriorityBadgeClass(p) { return ({ low: 'success', medium: 'info', high: 'warning', critical: 'danger' }[p] || 'secondary'); }
 
   // Loading overlay
   function showLoading(show) {
     console.log('showLoading called with:', show);
     let el = document.getElementById('loading');
-    
+
     if (!el && show) {
       console.log('Creating loading overlay');
       el = document.createElement('div');
@@ -1755,10 +1756,10 @@ function reportCardHTML(r) {
     } else if (el) {
       console.log('Toggling loading overlay visibility');
       el.style.display = show ? 'flex' : 'none';
-      
+
       // Force reflow
       void el.offsetHeight;
-      
+
       // If hiding, remove the element after transition
       if (!show) {
         setTimeout(() => {
@@ -1771,21 +1772,21 @@ function reportCardHTML(r) {
     }
   }
 
-  function showError(msg){ showToast('error',msg); }
+  function showError(msg) { showToast('error', msg); }
 
   // Generic toast
-  function showToast(type,msg){
+  function showToast(type, msg) {
     const wrapper = document.createElement('div');
-    wrapper.className='toast align-items-center text-white bg-'+(type==='error'?'danger':'success')+' border-0';
-    wrapper.setAttribute('role','alert');
-    wrapper.innerHTML=`<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
+    wrapper.className = 'toast align-items-center text-white bg-' + (type === 'error' ? 'danger' : 'success') + ' border-0';
+    wrapper.setAttribute('role', 'alert');
+    wrapper.innerHTML = `<div class="d-flex"><div class="toast-body">${msg}</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>`;
     const container = document.createElement('div');
-    container.className='position-fixed bottom-0 end-0 p-3';
-    container.style.zIndex='1100';
+    container.className = 'position-fixed bottom-0 end-0 p-3';
+    container.style.zIndex = '1100';
     container.appendChild(wrapper);
     document.body.appendChild(container);
-    const toast = new bootstrap.Toast(wrapper,{delay:4000});
+    const toast = new bootstrap.Toast(wrapper, { delay: 4000 });
     toast.show();
-    wrapper.addEventListener('hidden.bs.toast',()=>document.body.removeChild(container));
+    wrapper.addEventListener('hidden.bs.toast', () => document.body.removeChild(container));
   }
 });
