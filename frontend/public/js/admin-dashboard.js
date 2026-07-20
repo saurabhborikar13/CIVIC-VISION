@@ -1,4 +1,4 @@
-// Ultra-Elegant CivicVerse Dashboard JavaScript
+// Ultra-Elegant Civic vision Dashboard JavaScript
 // Next-generation civic engagement platform
 
 class CivicDashboard {

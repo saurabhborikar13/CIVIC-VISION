@@ -1496,7 +1496,7 @@ function exportReportData(reportId) {
           <div class="d-flex align-items-center">
             <img src="/img/logo.png" alt="Logo" class="logo">
             <div>
-              <div class="print-title">CivicSense Report</div>
+              <div class="print-title">Civic Vision Report</div>
               <div class="print-date">Generated on ${new Date().toLocaleString()}</div>
             </div>
           </div>
@@ -1571,7 +1571,7 @@ function exportReportData(reportId) {
         </div>
         
         <div class="text-center text-muted small no-print">
-          This report was generated from CivicSense on ${new Date().toLocaleString()}
+          This report was generated from Civic Vision on ${new Date().toLocaleString()}
         </div>
       </div>
     </body>

@@ -1,5 +1,5 @@
 /**
- * CivicSense — Mobile Experience JS
+ * Civic Vision — Mobile Experience JS
  * Injects: Bottom Nav Bar + Slide-out Drawer + Hamburger Button
  * Works on all citizen portal pages.
  */

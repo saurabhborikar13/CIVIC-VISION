@@ -3,2174 +3,362 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Civic Vision - The Future of Urban Governance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Civic Vision - Smarter Cities, Simpler Reporting</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Revolutionary CSS with 3D effects, animations, and futuristic design */
         :root {
             --primary: #3c5378;
-            --primary-dark: #3c5378;
-            --secondary: #3c5378;
             --accent: #d79a2c;
             --success: #2f7a6d;
-            --error: #b0472f;
             --dark: #16233b;
             --light: #eef1f6;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --neon-blue: #3c5378;
-            --neon-purple: #b8863b;
-            --neon-pink: #b0472f;
-            --neon-green: #2f7a6d;
+            --text-muted: rgba(255, 255, 255, 0.7);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: 14px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'IBM Plex Sans', sans-serif;
-            background: linear-gradient(135deg, #16233b 0%, #16233b 50%, #2a3e5e 100%);
+            background: var(--dark);
             color: white;
-            overflow-x: hidden;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* Floating Particles Background */
-        .particles-container {
+        /* Simple floating shapes, matching the admin login page's background */
+        .floating-shapes {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
+            overflow: hidden;
             pointer-events: none;
-            z-index: 1;
+            z-index: 0;
         }
 
-        .particle {
+        .shape {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: var(--neon-blue);
             border-radius: 50%;
-            animation: float 6s infinite linear;
+            background: radial-gradient(circle, rgba(60, 83, 120, 0.35), transparent 70%);
+            animation: drift 18s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
+        .shape:nth-child(1) { width: 300px; height: 300px; top: -80px; left: -60px; }
+        .shape:nth-child(2) { width: 220px; height: 220px; bottom: 10%; right: -60px; animation-delay: 4s; }
+        .shape:nth-child(3) { width: 160px; height: 160px; top: 40%; left: 60%; animation-delay: 8s; }
+
+        @keyframes drift {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.08); }
         }
 
-        /* Navigation with Glassmorphism */
-        .navbar {
-            position: fixed;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(22, 35, 59, 0.82);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px;
-            padding: 10px 24px;
-            z-index: 1000;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .navbar:hover {
-            background: rgba(22, 35, 59, 0.9);
-            box-shadow: 0 20px 40px rgba(60, 83, 120, 0.3);
-        }
-
-        .nav-container {
+        /* Nav */
+        nav {
+            position: relative;
+            z-index: 10;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 30px;
+            padding: 1.5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        .nav-logo {
+        .logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.3rem;
+            font-weight: 700;
         }
 
-        .nav-logo i {
-            font-size: 1.8rem;
-            color: var(--neon-blue);
-            animation: pulse 2s infinite;
-        }
+        .logo i { color: var(--accent); }
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover::after {
-            width: 100%;
-        }
-
-        .nav-cta {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            padding: 12px 24px;
-            border-radius: 25px;
+        nav .btn-link {
             color: white;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(60, 83, 120, 0.3);
-            border: none;
-            cursor: pointer;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.25);
+            transition: all 0.2s ease;
         }
 
-        .nav-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(60, 83, 120, 0.5);
+        nav .btn-link:hover {
+            background: rgba(255,255,255,0.08);
         }
 
-        /* Enhanced Hero Section */
+        /* Hero */
         .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
             position: relative;
-            overflow: hidden;
-            perspective: 1000px;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(60, 83, 120, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(60, 83, 120, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 60%, rgba(60, 83, 120, 0.1) 0%, transparent 50%);
-        }
-
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(60, 83, 120, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(60, 83, 120, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 60%, rgba(60, 83, 120, 0.2) 0%, transparent 50%);
-            animation: bgShift 10s ease-in-out infinite;
-        }
-
-        @keyframes bgShift {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .hero-container {
-            max-width: 1400px;
+            z-index: 5;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            position: relative;
-            z-index: 10;
+            padding: 5rem 2rem 4rem;
+            text-align: center;
         }
 
-        .hero-content {
-            transform-style: preserve-3d;
+        .hero h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
         }
 
-        .hero-badge {
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 14px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            background: linear-gradient(135deg, rgba(60, 83, 120, 0.2), rgba(60, 83, 120, 0.2));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(60, 83, 120, 0.3);
-            padding: 12px 24px;
-            border-radius: 50px;
-            margin-bottom: 2rem;
-            animation: slideInLeft 1s ease 0.2s both;
-            box-shadow: 0 8px 32px rgba(60, 83, 120, 0.2);
-        }
-
-        .hero-badge i {
-            color: var(--neon-green);
-            animation: spin 3s linear infinite;
-            font-size: 1.1rem;
-        }
-
-        .hero-badge span {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .hero-title {
-            font-size: 3.75rem;
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, var(--neon-blue) 50%, var(--neon-purple) 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: slideInLeft 1s ease 0.4s both;
-            text-shadow: 0 0 40px rgba(60, 83, 120, 0.4);
-            letter-spacing: -0.03em;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 2.5rem;
-            line-height: 1.7;
-            animation: slideInLeft 1s ease 0.6s both;
-            font-weight: 400;
-            max-width: 580px;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-            animation: slideInLeft 1s ease 0.8s both;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1.8rem 1.5rem;
-            border-radius: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-10px) rotateX(10deg);
-            box-shadow: 0 20px 40px rgba(60, 83, 120, 0.3);
-            background: linear-gradient(135deg, rgba(60, 83, 120, 0.2), rgba(60, 83, 120, 0.1));
-        }
-
-        .stat-number {
-            font-size: 2.8rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-green));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-            font-weight: 500;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1.5rem;
-            animation: slideInLeft 1s ease 1s both;
-            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s ease;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             color: white;
-            padding: 18px 36px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 12px 35px rgba(60, 83, 120, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 18px 45px rgba(60, 83, 120, 0.6);
         }
 
         .btn-secondary {
             background: transparent;
             color: white;
-            padding: 18px 36px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--neon-blue);
-            color: var(--neon-blue);
-            box-shadow: 0 12px 35px rgba(60, 83, 120, 0.3);
-            transform: translateY(-3px);
-        }
-
-        /* Enhanced 3D Phone Mockup */
-        .hero-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
-            animation: slideInRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) ease 0.5s both;
-        }
-
-        @keyframes slideInRight {
-            0% {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .phone-3d {
-            width: 320px;
-            height: 650px;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: float3D 6s ease-in-out infinite;
-        }
-
-        @keyframes float3D {
-            0%, 100% { transform: rotateY(-15deg) rotateX(5deg) translateY(0px); }
-            50% { transform: rotateY(-10deg) rotateX(3deg) translateY(-20px); }
-        }
-
-        .phone-body {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(145deg, #1d2e4a 0%, #16233b 100%);
-            border-radius: 50px;
-            position: relative;
-            box-shadow: 
-                0 0 60px rgba(22, 35, 59, 0.4),
-                inset 0 0 60px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .phone-screen {
-            position: absolute;
-            top: 18px;
-            left: 18px;
-            right: 18px;
-            bottom: 18px;
-            background: linear-gradient(135deg, #16233b 0%, #2a3e5e 100%);
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .app-ui {
-            padding: 25px 20px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            position: relative;
-        }
-        
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .app-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .notification-bubble {
-            width: 24px;
-            height: 24px;
-            background: var(--neon-pink);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: white;
-            box-shadow: 0 0 20px rgba(176, 71, 47, 0.5);
-            animation: pulse 2s infinite;
-        }
-
-
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* .map-container {
-            height: 320px;
-            background: linear-gradient(135deg, #16233b, #2a3e5e);
-            border-radius: 25px;
-            position: relative;
-            margin-bottom: 25px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: inset 0 0 30px rgba(60, 83, 120, 0.1);
-        }
-
-        .issue-marker {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-            animation: markerPulse 3s infinite;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        } */
-
-
-        .report-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 18px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .report-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary-gradient);
-        }
-
-        .report-card.resolved::before {
-            background: linear-gradient(135deg, #2f7a6d 0%, #205e54 100%);
-        }
-
-        .report-card.in-progress::before {
-            background: linear-gradient(135deg, #d79a2c 0%, #97690f 100%);
-        }
-
-        .report-status {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .report-status.resolved {
-            color: #2f7a6d;
-        }
-
-        .report-status.in-progress {
-            color: #d79a2c;
-        }
-
-        .report-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: white;
-        }
-
-        .report-location {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .report-image {
-            width: 100%;
-            height: 80px;
-            background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .report-reward {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #2f7a6d;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .floating-btn {
-            position: absolute;
-            bottom: 40px;
-            right: 40px;
-            width: 70px;
-            height: 70px;
-            background: var(--primary-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            font-weight: 300;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(22, 35, 59, 0.5);
-            animation: floatingBtnPulse 3s infinite;
-        }
-
-        @keyframes floatingBtnPulse {
-            0% { transform: scale(1); box-shadow: 0 10px 30px rgba(22, 35, 59, 0.5); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(22, 35, 59, 0.7); }
-            100% { transform: scale(1); box-shadow: 0 10px 30px rgba(22, 35, 59, 0.5); }
-        }
-
-        @keyframes markerPulse {
-            0%, 100% { 
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-            }
-            50% { 
-                transform: scale(1.1);
-                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
-            }
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .action-btn {
-            background: linear-gradient(135deg, rgba(60, 83, 120, 0.2), rgba(60, 83, 120, 0.1));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(60, 83, 120, 0.3);
-            color: white;
-            padding: 12px 10px;
-            border-radius: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .action-btn:hover {
-            background: linear-gradient(135deg, rgba(60, 83, 120, 0.3), rgba(60, 83, 120, 0.2));
+        .btn-primary:hover, .btn-secondary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(60, 83, 120, 0.3);
         }
 
-        .action-btn i {
+        /* Feature cards - simple, flat */
+        .features {
+            position: relative;
+            z-index: 5;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 2rem 5rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.8rem;
+            text-align: center;
+        }
+
+        .feature-card i {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
             font-size: 1.1rem;
-            color: var(--neon-blue);
+            margin-bottom: 0.5rem;
         }
 
-        /* Enhanced Get Started Modal */
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Modal, same simple pattern as admin login */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
+            inset: 0;
+            background: rgba(0,0,0,0.75);
             z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
 
         .modal-content {
-            background: linear-gradient(135deg, rgba(22, 35, 59, 0.95), rgba(22, 35, 59, 0.95));
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            max-width: 600px;
+            background: var(--dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            max-width: 480px;
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalSlideIn 0.5s ease;
-            position: relative;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            padding: 2rem;
         }
 
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .modal-header {
-            padding: 2.5rem 2.5rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            position: relative;
-        }
-
-        .modal-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-        }
-
-        .modal-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, var(--neon-blue));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-subtitle {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1rem;
-            font-weight: 400;
-        }
-
-        .modal-close {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.7);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: rgba(176, 71, 47, 0.2);
-            border-color: var(--error);
-            color: var(--error);
-            transform: scale(1.1);
-        }
-
-        .modal-body {
-            padding: 2rem 2.5rem 2.5rem;
-        }
-
-        .get-started-options {
-            display: grid;
-            gap: 1.5rem;
+        .modal-content h3 {
+            margin-bottom: 1.5rem;
         }
 
         .option-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
-        }
-
-        .option-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(60, 83, 120, 0.1), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .option-card:hover::before {
-            left: 100%;
-        }
-
-        .option-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            background: linear-gradient(135deg, rgba(60, 83, 120, 0.15), rgba(60, 83, 120, 0.1));
-            border-color: rgba(60, 83, 120, 0.3);
-            box-shadow: 0 20px 40px rgba(60, 83, 120, 0.2);
-        }
-
-        .option-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: white;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 2;
-        }
-
-        .option-card:nth-child(1) .option-icon {
-            background: linear-gradient(135deg, #3c5378, #96702f);
-            box-shadow: 0 8px 25px rgba(60, 83, 120, 0.3);
-        }
-
-        .option-card:nth-child(2) .option-icon {
-            background: linear-gradient(135deg, #2f7a6d, #2a3e5e);
-            box-shadow: 0 8px 25px rgba(47, 122, 109, 0.3);
-        }
-
-        .option-card:nth-child(3) .option-icon {
-            background: linear-gradient(135deg, #3c5378, #b0472f);
-            box-shadow: 0 8px 25px rgba(60, 83, 120, 0.3);
-        }
-
-        .option-content {
-            flex: 1;
-            position: relative;
-            z-index: 2;
-        }
-
-        .option-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .option-description {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .option-arrow {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .option-card:hover .option-arrow {
-            color: var(--neon-blue);
-            transform: translateX(5px);
-        }
-
-        /* Features Section with Holographic Cards */
-        .features {
-            padding: 8rem 0;
-            position: relative;
-        }
-
-        .features-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        .section-title {
-            font-size: 2.75rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, white, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .section-subtitle {
-            font-size: 1.15rem;
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-        }
-
-        .feature-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 2.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.5s ease;
-            transform-style: preserve-3d;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, 
-                rgba(60, 83, 120, 0.1), 
-                rgba(60, 83, 120, 0.1), 
-                rgba(60, 83, 120, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
-            box-shadow: 
-                0 30px 60px rgba(60, 83, 120, 0.3),
-                0 0 50px rgba(60, 83, 120, 0.2);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
-            color: white;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-card h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: white;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-card p {
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-tags {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
-
-        .feature-tag {
-            background: rgba(60, 83, 120, 0.2);
-            color: var(--neon-blue);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border: 1px solid rgba(60, 83, 120, 0.3);
-        }
-
-        /* Mission Section with Animated Goals */
-        .mission {
-            padding: 8rem 0;
-            background: linear-gradient(135deg, #16233b 0%, #2a3e5e 100%);
-            position: relative;
-        }
-
-        .mission-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            text-align: center;
-        }
-
-        .mission-title {
-            font-size: 2.25rem;
-            font-weight: 900;
-            margin-bottom: 2rem;
-            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .mission-description {
-            font-size: 1.15rem;
-            color: rgba(255, 255, 255, 0.8);
-            max-width: 800px;
-            margin: 0 auto 4rem;
-            line-height: 1.6;
-        }
-
-        .goals-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 4rem;
-        }
-
-        .goal-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .goal-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, var(--neon-blue), transparent);
-            animation: rotate 4s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .goal-card:hover::before {
-            opacity: 0.1;
-        }
-
-        .goal-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(60, 83, 120, 0.3);
-        }
-
-        .goal-number {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .goal-label {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 0.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .goal-description {
-            color: rgba(255, 255, 255, 0.7);
-            position: relative;
-            z-index: 2;
-        }
-
-        /* CTA Section with Holographic Effect */
-        .cta {
-            padding: 8rem 0;
-            background: linear-gradient(135deg, #16233b 0%, #2a3e5e 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(60, 83, 120, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(60, 83, 120, 0.2) 0%, transparent 50%);
-            animation: ctaShift 8s ease-in-out infinite;
-        }
-
-        @keyframes ctaShift {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .cta-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .cta-title {
-            font-size: 2.75rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, white, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .cta-description {
-            font-size: 1.15rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 3rem;
-            line-height: 1.6;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* Footer with Neon Effects */
-        .footer {
-            background: #16233b;
-            padding: 4rem 0 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 4rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-brand {
-            max-width: 400px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .footer-logo i {
-            color: var(--neon-blue);
-            animation: pulse 2s infinite;
-        }
-
-        .footer-description {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .footer-social {
-            display: flex;
             gap: 1rem;
-        }
-
-        .social-link {
-            width: 50px;
-            height: 50px;
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            background: rgba(60, 83, 120, 0.2);
-            color: var(--neon-blue);
-            box-shadow: 0 10px 20px rgba(60, 83, 120, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .footer-links {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-
-        .footer-column h4 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--neon-blue);
-        }
-
-        .footer-column a {
-            display: block;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer;
             margin-bottom: 0.8rem;
-            transition: all 0.3s ease;
+            transition: background 0.2s ease;
         }
 
-        .footer-column a:hover {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-            transform: translateX(5px);
-        }
+        .option-card:hover { background: rgba(255,255,255,0.08); }
 
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 2rem;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-        }
+        .option-card i { font-size: 1.3rem; color: var(--accent); }
 
-        /* Demo Modal */
-        .demo-form .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .demo-form label {
+        .option-card div span {
             display: block;
-            margin-bottom: 0.5rem;
-            color: white;
-            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
 
-        .demo-form input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .demo-form input:focus {
-            outline: none;
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 0 3px rgba(60, 83, 120, 0.1);
-        }
-
-        .demo-form input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .btn-full {
-            width: 100%;
-            margin-top: 1rem;
-        }
-
-        /* Animations */
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Responsive Design */
-        /* Premium Morphing Hamburger */
-        .hamburger-btn {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
+        .modal-close {
+            float: right;
             background: none;
             border: none;
+            color: white;
+            font-size: 1.4rem;
             cursor: pointer;
-            padding: 0;
-            z-index: 3000;
-            transition: all 0.3s ease;
         }
 
-        .hamburger-btn span {
-            width: 100%;
-            height: 2px;
-            background: white;
-            border-radius: 10px;
-            transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-            transform-origin: center;
-        }
-
-        .hamburger-btn.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); background: var(--neon-blue); }
-        .hamburger-btn.active span:nth-child(2) { opacity: 0; transform: translateX(-20px); }
-        .hamburger-btn.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background: var(--neon-blue); }
-
-        .mobile-nav-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(22, 35, 59, 0.95);
-            backdrop-filter: blur(40px);
-            z-index: 2500;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            transform: translateY(-100%);
-            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 5;
+            text-align: center;
             padding: 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.9rem;
         }
 
-        .mobile-nav-overlay.active { transform: translateY(0); }
-
-        .mobile-nav-overlay .nav-link {
-            font-size: 2rem !important;
-            font-weight: 800 !important;
-            color: white !important;
-            text-decoration: none !important;
-            letter-spacing: -0.02em !important;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .mobile-nav-overlay.active .nav-link {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .mobile-nav-overlay .nav-link:nth-child(1) { transition-delay: 0.1s; }
-        .mobile-nav-overlay .nav-link:nth-child(2) { transition-delay: 0.2s; }
-        .mobile-nav-overlay .nav-link:nth-child(3) { transition-delay: 0.3s; }
-        .mobile-nav-overlay .nav-cta { transition-delay: 0.4s; }
-
-        .mobile-nav-overlay .nav-cta {
-            margin-top: 1rem;
-            padding: 16px 40px !important;
-            font-size: 1.1rem !important;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .mobile-nav-overlay.active .nav-cta { opacity: 1; transform: translateY(0); }
-
-        /* Responsive Improvements */
         @media (max-width: 768px) {
-            .navbar {
-                top: 15px !important;
-                left: 15px !important;
-                right: 15px !important;
-                width: auto !important;
-                transform: none !important;
-                padding: 12px 24px !important;
-                border-radius: 50px !important;
-                background: rgba(255, 255, 255, 0.08) !important;
-                backdrop-filter: blur(25px) !important;
-                border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                z-index: 2900;
-            }
-
-            .nav-container { justify-content: space-between !important; width: 100% !important; gap: 0 !important; }
-            .nav-logo { 
-                font-size: 1.4rem !important; 
-                -webkit-text-fill-color: white !important; 
-                color: white !important;
-            }
-            .nav-logo i { font-size: 1.6rem !important; }
-            
-            .hamburger-btn { display: flex !important; }
-            .nav-links { display: none !important; }
-            .nav-cta { display: none !important; }
-
-            .hero { padding: 120px 0 60px !important; }
-            .hero-title { font-size: 2.7rem !important; letter-spacing: -0.02em !important; }
-            
-            .features-grid { 
-                grid-template-columns: 1fr !important;
-                padding: 0 1.25rem !important; 
-                gap: 1.5rem !important; 
-            }
-            .feature-card { padding: 2rem 1.5rem !important; width: 100% !important; box-sizing: border-box !important; }
-            .stat-card { padding: 1.5rem 1rem !important; }
-
-            /* Mobile Modal Compactness */
-            .modal-content {
-                width: 95% !important;
-                margin: 20px auto !important;
-                padding: 0 !important;
-            }
-            .modal-header {
-                padding: 1.5rem 1.25rem 0.75rem !important;
-            }
-            .modal-title {
-                font-size: 1.5rem !important;
-            }
-            .modal-subtitle {
-                font-size: 0.85rem !important;
-            }
-            .modal-body {
-                padding: 1rem 1.25rem 1.5rem !important;
-            }
-            .get-started-options {
-                gap: 0.85rem !important;
-            }
-            .option-card {
-                padding: 0.85rem !important;
-                gap: 1rem !important;
-            }
-            .option-icon {
-                width: 45px !important;
-                height: 45px !important;
-                font-size: 1.2rem !important;
-                border-radius: 12px !important;
-            }
-            .option-title {
-                font-size: 1.1rem !important;
-                margin-bottom: 0px !important;
-            }
-            .option-description {
-                font-size: 0.75rem !important;
-                display: -webkit-box;
-                -webkit-line-clamp: 1;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            .option-arrow {
-                font-size: 0.9rem !important;
-            }
-        }
-
-            .hero { padding: 100px 0 60px !important; min-height: auto !important; }
-            .hero-container {
-                grid-template-columns: 1fr !important;
-                gap: 3rem !important;
-                text-align: center !important;
-                padding: 0 1.5rem !important;
-            }
-
-            .hero-badge { margin: 0 auto 1.5rem !important; }
-            .hero-title { font-size: 3rem !important; line-height: 1.1 !important; }
-            .hero-subtitle { font-size: 1rem !important; margin: 0 auto 2rem !important; }
-            
-            .hero-stats {
-                display: grid !important;
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 1rem !important;
-                margin-bottom: 2.5rem !important;
-            }
-            .stat-card { padding: 1.25rem 1rem !important; }
-            .stat-number { font-size: 1.8rem !important; }
-
-            .hero-cta {
-                flex-direction: column !important;
-                gap: 1rem !important;
-                width: 100% !important;
-            }
-            .btn-primary, .btn-secondary {
-                width: 100% !important;
-                justify-content: center !important;
-                padding: 14px 24px !important;
-                font-size: 1rem !important;
-            }
-
-            .hero-visual {
-                margin-top: 2rem !important;
-                transform: scale(0.85) !important;
-            }
-            .phone-3d { width: 280px !important; height: 560px !important; }
-
-            .mission { padding: 4rem 0 !important; }
-            .mission-title { font-size: 2.2rem !important; }
-            .goals-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
-
-            .footer-content { grid-template-columns: 1fr !important; gap: 3rem !important; text-align: center !important; }
-            .footer-brand { margin: 0 auto !important; }
-            .footer-social { justify-content: center !important; }
-            .footer-links { grid-template-columns: repeat(2, 1fr) !important; gap: 2rem 1rem !important; text-align: left !important; }
-            
-            .cta-title { font-size: 2.2rem !important; }
-            .cta-buttons { flex-direction: column !important; width: 100% !important; }
-        }
-
-        @media (max-width: 480px) {
-            .hero-title { font-size: 2.4rem !important; }
-            .stat-number { font-size: 1.6rem !important; }
-            .hero-stats { grid-template-columns: 1fr !important; }
-            .footer-links { grid-template-columns: 1fr !important; text-align: center !important; }
+            .features { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2rem; }
+            nav { flex-direction: column; gap: 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="particles-container" id="particles"></div>
-    <!-- Mobile Nav Overlay -->
-    <div class="mobile-nav-overlay" id="mobileNav">
-        <a href="#features" class="nav-link" onclick="toggleMobileNav()">Features</a>
-        <a href="#mission" class="nav-link" onclick="toggleMobileNav()">Mission</a>
-        <a href="#contact" class="nav-link" onclick="toggleMobileNav()">Contact</a>
-        <button class="nav-cta" onclick="toggleMobileNav(); openModal('getStartedModal')">Get Started</button>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo" onclick="window.location.href='/'" style="cursor: pointer;">
-                <i class="fas fa-city" style="color: var(--neon-blue);"></i>
-                <span>The Civic Vision</span>
-            </div>
-            <div class="nav-links">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#mission" class="nav-link">Mission</a>
-                <a href="#contact" class="nav-link">Contact</a>
-            </div>
-            <button class="nav-cta" onclick="openModal('getStartedModal')">Get Started</button>
-            
-            <button class="hamburger-btn" id="hamBtn" onclick="toggleMobileNav()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-city"></i>
+            <span>Civic Vision</span>
         </div>
+        <a href="/login" class="btn-link">Sign In</a>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-container">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i class="fas fa-rocket"></i>
-                    <span>Building the future</span>
-                </div>
-                <h1 class="hero-title">
-                    The Future of
-                    <br>Smart Cities
-                    <br>Starts Here
-                </h1>
-                <p class="hero-subtitle">
-                    The Civic Vision transforms urban governance with AI-powered civic engagement. 
-                    Report issues instantly, track progress in real-time, and earn rewards 
-                    for making your community better.
-                </p>
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <span class="stat-number" data-target="78">0</span>
-                        <span class="stat-label">% Issues Resolved</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number" data-target="94">0</span>
-                        <span class="stat-label">% AI Accuracy</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number" data-target="1000">0</span>
-                        <span class="stat-label">Target Citizens</span>
-                    </div>
-                </div>
-                <div class="hero-cta">
-                    <button class="btn-primary" onclick="openModal('getStartedModal')">
-                        <i class="fas fa-rocket"></i>
-                        Get Started
-                    </button>
-                    <button class="btn-secondary" onclick="openModal('demoModal')">
-                        <i class="fas fa-play"></i>
-                        Watch Demo
-                    </button>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="phone-3d">
-                    <div class="phone-body">
-                        <div class="phone-screen">
-                            <div class="app-ui">
-                                <div class="app-header">
-                                    <div class="app-title">The Civic Vision</div>
-                                    <div class="notification-bubble">3</div>
-                                </div>
-                                
-                                <div class="report-card resolved">
-                                    <div class="report-status resolved">✅ Resolved</div>
-                                    <div class="report-title">Pothole on MG Road</div>
-                                    <div class="report-location">📍 Connaught Place, Delhi</div>
-                                </div>
-                                
-                                <div class="report-card in-progress">
-                                    <div class="report-status in-progress">🔄 In Progress</div>
-                                    <div class="report-title">Broken Streetlight</div>
-                                    <div class="report-location">📍 Sector 18, Noida</div>
-                                </div>
-                                
-                                <div class="report-card">
-                                    <div class="report-status">🆕 New Report</div>
-                                    <div class="report-title">Waste Overflow</div>
-                                    <div class="report-location">📍 Cyber City, Gurgaon</div>
-                                </div>
-                                <div class="quick-actions">
-                                    <button class="action-btn">
-                                        <i class="fas fa-camera"></i>
-                                        Report Issue
-                                    </button>
-                                    <button class="action-btn">
-                                        <i class="fas fa-map"></i>
-                                        View Map
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <h1>Report civic issues. Track real progress.</h1>
+        <p>
+            Civic Vision helps citizens report local problems — potholes, broken streetlights,
+            waste overflow — and lets municipal departments resolve them faster.
+        </p>
+        <div class="hero-buttons">
+            <button class="btn-primary" onclick="openModal('getStartedModal')">
+                <i class="fas fa-rocket"></i> Get Started
+            </button>
+            <!-- <button class="btn-secondary" onclick="window.location.href='#features'">
+                Learn More
+            </button> -->
         </div>
     </section>
 
-    <!-- Features Section -->
     <section id="features" class="features">
-        <div class="features-container">
-            <div class="section-header">
-                <h2 class="section-title">Revolutionary Features</h2>
-                <p class="section-subtitle">
-                    Cutting-edge technology meets civic engagement
-                </p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>AI-Powered Analysis</h3>
-                    <p>Advanced computer vision analyzes photos to detect and categorize urban issues with 94% accuracy, automatically routing reports to the correct departments.</p>
-                    <div class="feature-tags">
-                        <span class="feature-tag">Computer Vision</span>
-                        <span class="feature-tag">Auto-categorization</span>
-                        <span class="feature-tag">Smart Routing</span>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Real-Time Analytics</h3>
-                    <p>Municipal dashboard provides live insights into community needs, resource allocation, and performance metrics for data-driven decision making.</p>
-                    <div class="feature-tags">
-                        <span class="feature-tag">Live Dashboard</span>
-                        <span class="feature-tag">KPI Tracking</span>
-                        <span class="feature-tag">Resource Optimization</span>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h3>Civic Rewards System</h3>
-                    <p>Gamification with points, leaderboards, and real-world rewards including transit credits, tax rebates, and local business discounts.</p>
-                    <div class="feature-tags">
-                        <span class="feature-tag">Point System</span>
-                        <span class="feature-tag">Leaderboards</span>
-                        <span class="feature-tag">Real Rewards</span>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <h3>Predictive Maintenance</h3>
-                    <p>Machine learning algorithms analyze patterns to predict and prevent recurring issues before they escalate, optimizing city maintenance.</p>
-                    <div class="feature-tags">
-                        <span class="feature-tag">ML Predictions</span>
-                        <span class="feature-tag">Pattern Analysis</span>
-                        <span class="feature-tag">Prevention</span>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Universal Access</h3>
-                    <p>Progressive Web App with offline capabilities, voice commands, and support for 10+ languages ensuring accessibility for all citizens.</p>
-                    <div class="feature-tags">
-                        <span class="feature-tag">PWA</span>
-                        <span class="feature-tag">Offline Mode</span>
-                        <span class="feature-tag">Multilingual</span>
-                    </div>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Enterprise Security</h3>
-                    <p>Bank-level encryption with GDPR compliance, zero-trust architecture, and continuous monitoring for maximum data protection.</p>
-                    <div class="feature-tags">
-                        <span class="feature-tag">End-to-End Encryption</span>
-                        <span class="feature-tag">GDPR Compliant</span>
-                        <span class="feature-tag">Zero-Trust</span>
-                    </div>
-                </div>
-            </div>
+        <div class="feature-card">
+            <i class="fas fa-camera"></i>
+            <h3>Report in Seconds</h3>
+            <p>Snap a photo, add a location, and submit — no lengthy forms.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Track Progress</h3>
+            <p>Follow your report from submission to resolution in real time.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-trophy"></i>
+            <h3>Earn Recognition</h3>
+            <p>Active citizens climb the leaderboard for community contributions.</p>
         </div>
     </section>
 
-    <!-- Mission Section -->
-    <section id="mission" class="mission">
-        <div class="mission-container">
-            <h2 class="mission-title">Our 2026 Vision</h2>
-            <p class="mission-description">
-                Collaborating with the Indian Government to transform urban governance 
-                and empower communities across the nation with cutting-edge technology.
-            </p>
-            <div class="goals-grid">
-                <div class="goal-card">
-                    <div class="goal-number" data-target="1000">0</div>
-                    <div class="goal-label">Citizens Empowered</div>
-                    <div class="goal-description">Active users reporting and tracking civic issues across India</div>
-                </div>
-                <div class="goal-card">
-                    <div class="goal-number" data-target="50">0</div>
-                    <div class="goal-label">Municipalities</div>
-                    <div class="goal-description">Government partnerships established nationwide</div>
-                </div>
-                <div class="goal-card">
-                    <div class="goal-number" data-target="94">0</div>
-                    <div class="goal-label">% AI Accuracy</div>
-                    <div class="goal-description">Precision in issue detection and smart categorization</div>
-                </div>
-                <div class="goal-card">
-                    <div class="goal-number" data-target="80">0</div>
-                    <div class="goal-label">% Faster Resolution</div>
-                    <div class="goal-description">Reduced response time through intelligent routing</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta">
-        <div class="cta-container">
-            <h2 class="cta-title">Ready to Transform Your City?</h2>
-            <p class="cta-description">
-                Join the revolution in urban governance. Partner with us to build 
-                smarter, more responsive cities for the future.
-            </p>
-            <div class="cta-buttons">
-                <button class="btn-primary" onclick="openModal('demoModal')">
-                    <i class="fas fa-calendar"></i>
-                    Schedule Demo
-                </button>
-                <button class="btn-secondary">
-                    <i class="fas fa-handshake"></i>
-                    Government Partnership
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <i class="fas fa-city"></i>
-                        <span>The Civic Vision</span>
-                    </div>
-                    <p class="footer-description">
-                        Revolutionizing urban governance through AI-powered civic engagement. 
-                        Building smarter, more responsive cities for the future.
-                    </p>
-                    <div class="footer-social">
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Product</h4>
-                        <a href="#features">Features</a>
-                        <a href="#pricing">Pricing</a>
-                        <a href="#api">API Documentation</a>
-                        <a href="#integrations">Integrations</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <a href="#about">About Us</a>
-                        <a href="#careers">Careers</a>
-                        <a href="#press">Press Kit</a>
-                        <a href="#contact">Contact</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Resources</h4>
-                        <a href="#docs">Documentation</a>
-                        <a href="#blog">Blog</a>
-                        <a href="#support">Support</a>
-                        <a href="#community">Community</a>
-                    </div>
-                </div>
-            </div>
-          
-        </div>
+    <footer>
+        &copy; 2026 Civic Vision. Built for better cities.
     </footer>
 
-    <!-- Enhanced Get Started Modal -->
+    <!-- Get Started Modal -->
     <div id="getStartedModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
+            <button class="modal-close" onclick="closeModal('getStartedModal')">&times;</button>
+            <h3>Get Started with Civic Vision</h3>
+
+            <div class="option-card" onclick="window.location.href='/login'">
+                <i class="fas fa-sign-in-alt"></i>
                 <div>
-                    <h3 class="modal-title">Get Started with The Civic Vision</h3>
-                    <p class="modal-subtitle">Choose your access level to begin your journey</p>
+                    Citizen Sign In
+                    <span>Already have an account</span>
                 </div>
-                <button class="modal-close" onclick="closeModal('getStartedModal')">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="get-started-options">
-                    <div class="option-card" onclick="redirectToPage('/login')">
-                        <div class="option-icon">
-                            <i class="fas fa-sign-in-alt"></i>
-                        </div>
-                        <div class="option-content">
-                            <div class="option-title">Citizen Sign In</div>
-                            <div class="option-description">Already have an account? Sign in to access your dashboard and continue reporting issues</div>
-                        </div>
-                        <div class="option-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="option-card" onclick="redirectToPage('/signup')">
-                        <div class="option-icon">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <div class="option-content">
-                            <div class="option-title">Register as Citizen</div>
-                            <div class="option-description">New to The Civic Vision? Create your citizen account to start reporting issues and earning rewards</div>
-                        </div>
-                        <div class="option-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="option-card" onclick="redirectToPage('https://civic-vision-admin-frontend.onrender.com')">
-                        <div class="option-icon">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <div class="option-content">
-                            <div class="option-title">Admin Login</div>
-                            <div class="option-description">Municipal admin access to the management dashboard and administrative tools</div>
-                        </div>
-                        <div class="option-arrow">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </div>
+
+            <div class="option-card" onclick="window.location.href='/signup'">
+                <i class="fas fa-user-plus"></i>
+                <div>
+                    Register as Citizen
+                    <span>Create a new account</span>
+                </div>
+            </div>
+
+            <div class="option-card" onclick="window.location.href='https://civic-vision-admin-frontend.onrender.com'">
+                <i class="fas fa-user-shield"></i>
+                <div>
+                    Admin Login
+                    <span>Municipal staff access</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Demo Modal -->
-  
-
     <script>
-        // Floating Particles
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            particle.style.animationDelay = Math.random() * 2 + 's';
-            
-            const colors = ['#3c5378', '#3c5378', '#3c5378', '#b0472f', '#2f7a6d'];
-            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-            
-            document.getElementById('particles').appendChild(particle);
-
-            setTimeout(() => {
-                particle.remove();
-            }, 6000);
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
         }
-
-        setInterval(createParticle, 300);
-
-        // Animated Counters
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-number, .goal-number');
-            
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target'));
-                const increment = target / 100;
-                let current = 0;
-                
-                const updateCounter = () => {
-                    if (current < target) {
-                        current += increment;
-                        counter.textContent = Math.ceil(current);
-                        setTimeout(updateCounter, 20);
-                    } else {
-                        counter.textContent = target;
-                    }
-                };
-                
-                updateCounter();
-            });
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
-
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (entry.target.classList.contains('mission') || 
-                        entry.target.classList.contains('hero')) {
-                        animateCounters();
-                    }
-                    
-                    // Add animation classes
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe sections
-        document.querySelectorAll('.features, .mission, .cta').forEach(section => {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(30px)';
-            section.style.transition = 'all 0.8s ease';
-            observer.observe(section);
-        });
-
-        // Initialize hero animations
-        window.addEventListener('load', () => {
-            setTimeout(animateCounters, 1000);
-        });
-
-        // Modal Functions
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('active');
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Redirect function for Get Started options
-        function redirectToPage(url) {
-            window.location.href = url;
-        }
-
-        // Close modals on outside click
         document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal(modal.id);
-                }
+            modal.addEventListener('click', e => {
+                if (e.target === modal) closeModal(modal.id);
             });
         });
-
-        // Close modals with Escape key
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.key === 'Escape') {
-                document.querySelectorAll('.modal.active').forEach(modal => {
-                    closeModal(modal.id);
-                });
+                document.querySelectorAll('.modal.active').forEach(m => closeModal(m.id));
             }
         });
-
-        // Form submissions
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Show success message
-                alert('Form submitted successfully! We will get back to you soon.');
-                
-                // Close modal
-                const modal = form.closest('.modal');
-                if (modal) {
-                    closeModal(modal.id);
-                }
-                
-                // Reset form
-                form.reset();
-            });
-        });
-
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Parallax effect for background elements
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const rate = scrolled * -0.5;
-            
-            document.querySelector('.hero-bg').style.transform = `translateY(${rate}px)`;
-        });
-
-        // Add hover effects to interactive elements
-        document.querySelectorAll('.feature-card, .goal-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-15px) rotateX(5deg) rotateY(5deg) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) rotateX(0) rotateY(0) scale(1)';
-            });
-        });
-
-        // Button ripple effect
-        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.style.position = 'absolute';
-                ripple.style.borderRadius = '50%';
-                ripple.style.background = 'rgba(255, 255, 255, 0.3)';
-                ripple.style.transform = 'scale(0)';
-                ripple.style.animation = 'ripple 0.6s linear';
-                ripple.style.pointerEvents = 'none';
-                
-                this.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
-
-        // Mobile Nav Toggle
-        function toggleMobileNav() {
-            const mobileNav = document.getElementById('mobileNav');
-            const hamBtn = document.getElementById('hamBtn');
-            mobileNav.classList.toggle('active');
-            hamBtn.classList.toggle('active');
-            
-            if (mobileNav.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        // Add ripple animation CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-            
-            .btn-primary, .btn-secondary {
-                position: relative;
-                overflow: hidden;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
