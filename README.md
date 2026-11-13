@@ -1,6 +1,6 @@
 
 Explore the live application here:  
-🔗 **[Live Demo Link](YOUR_DEPLOYMENT_URL_HERE)**
+🔗 **[Live Demo Link](https://civic-vision.onrender.com/)**
 
 ### 🔐 Demo Credentials
 To test the application without creating a new account, log in using the credentials below:
