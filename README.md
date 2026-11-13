@@ -1,13 +1,15 @@
+## 🌐 Live Demo & Video Walkthrough
 
-Explore the live application here:  
-🔗 **[Live Demo Link](https://civic-vision.onrender.com/)**
 
-### 🔐 Demo Credentials
-To test the application without creating a new account, log in using the credentials below:
+* 🎥 **Demo Video:** (https://drive.google.com/file/d/1ZrtKMAHQ0QbDswC_Z1tmx4Xe4RW7bVO7/view?usp=drive_link)
 
-| Field | Credential |
-| :--- | :--- |
-| **Email** | `saurabh@gmail.com` |
-| **Password** | `Saurabh*123` |
 
-Demo Video: https://drive.google.com/file/d/1ZrtKMAHQ0QbDswC_Z1tmx4Xe4RW7bVO7/view?usp=drive_link
+
+Use the credentials below to test both the Citizen view and the Municipal Admin dashboard without registering:
+* 🔗 **Live Application:** (https://civic-vision.onrender.com/)
+  
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Citizen (User)** | `saurabh@gmail.com` | `Saurabh*123` |
+| **Municipal Staff (Admin)** | `pwd-admin@civic.in` | `civic123` |
+
